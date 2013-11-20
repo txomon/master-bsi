@@ -1,0 +1,2 @@
+net clk tnm_net = clk;
+timespec ts_clk = period sys_clk 5 ns;

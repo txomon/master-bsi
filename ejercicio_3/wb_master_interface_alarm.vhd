@@ -48,15 +48,15 @@ architecture behavioral of wb_master_interface_alarm is
                                                         -- the data for the slave
   signal temporal_register_ce : std_logic;              -- clock enable for the temporal
                                                         -- register
-  signal init_transfer_node : std_logic;            	  -- inits the transfer to the slave
+  signal init_transfer_node : std_logic;                -- inits the transfer to the slave
   signal data_in_node: std_logic_vector(15 downto 0);   -- internal data in
                                                         -- (removed by synthesis)
   signal data_out_node: std_logic_vector(15 downto 0);  -- internal data out
                                                         -- (removed by synthesis)
                                                         -- makes easier architecture with more than one masters
-  signal stb_o_out : std_logic;            	
-  signal we_o_out : std_logic;            	
-  signal ack_i_in : std_logic;            	
+  signal stb_o_out : std_logic;              
+  signal we_o_out : std_logic;              
+  signal ack_i_in : std_logic;              
 
   --
   -- wishbone master interface control state machine

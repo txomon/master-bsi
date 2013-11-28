@@ -25,7 +25,7 @@ entity wb_master_interface_counter is
             clk_i:  in  std_logic;    -- wb : global bus clock
           dat_i:  in  std_logic_vector(15 downto 0 );     -- wb : 16 bits
                           -- data bus input
-            dat_o:  out  std_logic_vector(15 downto 0 );   -- wb : 16 bits 
+            dat_o:  out  std_logic_vector(15 downto 0 );   -- wb : 16 bits
                           -- data bus output
             stb_o:  out  std_logic;    -- wb : access qualify
             we_o:   out  std_logic;    -- wb : read/write request

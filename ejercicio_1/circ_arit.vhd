@@ -27,7 +27,7 @@ begin
       breg <= (others => '0');
       creg <= (others => '0');
       dreg <= (others => '0');
-    elsif (en='1') then 
+    elsif (en='1') then
       areg <= a;
       breg <= b;
       creg <= c;
@@ -43,7 +43,7 @@ begin
       s2 <= creg + dreg;
     if reset='1' then
       aritout <= (others => '0');
-     elsif (en='1') then 
+     elsif (en='1') then
       aritout <= s1+s2;
      end if;
    end if;

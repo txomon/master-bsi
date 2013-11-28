@@ -1,7 +1,7 @@
 --
 -------------------------------------------------------------------------------
 -- description    : interconnects a wb master core p2p with an slave one.
---                  
+--
 -------------------------------------------------------------------------------
 -- entity for wb_intercon_p2p unit                                            --
 -------------------------------------------------------------------------------
@@ -13,7 +13,7 @@ use ieee.std_logic_unsigned.all;
 library work;
 
 entity wb_intercon_p2p is
-    port (  
+    port (
       pin_reset:  in  std_logic;    -- external reset signal
         pin_clock_50:  in  std_logic;    -- external clock signal; 50 mhz
       --
@@ -35,23 +35,23 @@ architecture struct of wb_intercon_p2p is
     dat_i : in std_logic_vector(15 downto 0);
     stb_i : in std_logic;
     cyc_i : in std_logic;
-    we_i : in std_logic;          
+    we_i : in std_logic;
     ack_o : out std_logic;
     dat_o : out std_logic_vector(15 downto 0);
     leds : out std_logic_vector(7 downto 0)
     );
   end component;
-  
+
   component wb_master_interface_counter
-  generic (count_module_factor : integer := 3);     
+  generic (count_module_factor : integer := 3);
 
   port(
     rst_i : in std_logic;
     ack_i : in std_logic;
     clk_i : in std_logic;
-    gnt_i : in std_logic;    
-    dat_i : in std_logic_vector(15 downto 0);        
-    dat_o : out std_logic_vector(15 downto 0);      
+    gnt_i : in std_logic;
+    dat_i : in std_logic_vector(15 downto 0);
+    dat_o : out std_logic_vector(15 downto 0);
     --adr_o : out std_logic;
     stb_o : out std_logic;
     we_o : out std_logic;
@@ -65,10 +65,10 @@ architecture struct of wb_intercon_p2p is
 
 signal rst_i : std_logic;
 signal clk_i : std_logic;
-signal ack   : std_logic;  
+signal ack   : std_logic;
 signal we   : std_logic;
 signal stb  : std_logic;
-signal cyc  : std_logic;    
+signal cyc  : std_logic;
 --signal adr  : std_logic;
 signal dat_i_node : std_logic_vector(15 downto 0);
 signal dat_o_node : std_logic_vector(15 downto 0);
@@ -81,7 +81,7 @@ clk_i <= pin_clock_50;
 -- components instantation
 --
 -- wishbone master core (counter)
-  inst_wb_master_interface: wb_master_interface_counter 
+  inst_wb_master_interface: wb_master_interface_counter
   generic map(
   count_module_factor => 20)    -- timer prescaler
   port map(

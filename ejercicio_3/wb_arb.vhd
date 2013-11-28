@@ -15,28 +15,27 @@ generic (n_master : integer := 2);
     --
     -- wishbone signals
     --
-    rst_i:  in  std_logic;            	-- wb : global reset signal
-    clk_i:  in  std_logic;            	-- wb : global bus clock
+    rst_i:  in  std_logic;              -- wb : global reset signal
+    clk_i:  in  std_logic;              -- wb : global bus clock
     cyc_i:  in  std_logic_vector(n_master-1 downto 0);   -- wb : master bus request
     gnt_o:  out  std_logic_vector(n_master-1 downto 0);   -- wb : master bus access grant
     cyc_shared_o : out  std_logic        -- wb : master bus request for the slaves
   );
 end wb_arb;
 
-architecture struct of wb_arb is
 
+architecture behavioral of wb_arb is
+  type arb_state is (start, check_which_master, do_round, set_grant, check_end_cyc);
+  signal act_arb : arb_state;
+  signal next_arb: arb_state;
 
-type arb_state is (start, check_which_master, do_round, set_grant, check_end_cyc);
-signal act_arb : arb_state;
-signal next_arb: arb_state;
-
-signal master_match_turn : std_logic;  -- comparation cyc and counter value decoded
-                                      -- counter to know the turn
-signal counter_value: std_logic_vector(n_master-1 downto 0);
-                                      -- clock enable for the sync. counter
-signal counter_value_ce: std_logic;
-signal counter_decoded: std_logic_vector(n_master-1 downto 0);
-signal cyc_and_counter: std_logic_vector(n_master-1 downto 0);
+  signal master_match_turn : std_logic;  -- comparation cyc and counter value decoded
+                                        -- counter to know the turn
+  signal counter_value: std_logic_vector(n_master-1 downto 0);
+                                        -- clock enable for the sync. counter
+  signal counter_value_ce: std_logic;
+  signal counter_decoded: std_logic_vector(n_master-1 downto 0);
+  signal cyc_and_counter: std_logic_vector(n_master-1 downto 0);
 
 begin
 
@@ -77,7 +76,7 @@ begin
   -- match detection
   master_match_turn <=  '1' when  (cyc_and_counter /= "0")
                             else '0';
-            
+
   --
   -- arbitration control
   --
@@ -148,4 +147,4 @@ begin
     cyc_shared_o <= '1' when set_grant|check_end_cyc,
                     '0' when others;
 
-end struct;
+end behavioral;

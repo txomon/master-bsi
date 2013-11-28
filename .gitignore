@@ -65,3 +65,4 @@ xlnx*/
 # END ISE
 !fichlectura.txt
 vhdl_practicas
+*.blc

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="/home/javier/proyectos/master/master-bsi/ejercicio_3/testbench_isim_beh1.wdb" id="1" type="auto">
+         <top_modules>
+            <top_module name="std_logic_1164" />
+            <top_module name="std_logic_arith" />
+            <top_module name="std_logic_unsigned" />
+            <top_module name="testbench" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <WVObjectSize size="23" />
+   <wvobject fp_name="/testbench/pin_reset" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">pin_reset</obj_property>
+      <obj_property name="ObjectShortName">pin_reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/pin_clock_50" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">pin_clock_50</obj_property>
+      <obj_property name="ObjectShortName">pin_clock_50</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/pin_leds" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">pin_leds[7:0]</obj_property>
+      <obj_property name="ObjectShortName">pin_leds[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/pin_clock_50_period" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">pin_clock_50_period</obj_property>
+      <obj_property name="ObjectShortName">pin_clock_50_period</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider5" type="divider">
+      <obj_property name="label">Master0</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="BkColor">128 128 255</obj_property>
+      <obj_property name="TextColor">230 230 230</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/uut/cyc" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">cyc[2:0]</obj_property>
+      <obj_property name="ObjectShortName">cyc[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/uut/gnt" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">gnt[2:0]</obj_property>
+      <obj_property name="ObjectShortName">gnt[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/uut/dat_out" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">dat_out[2:0]</obj_property>
+      <obj_property name="ObjectShortName">dat_out[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider9" type="divider">
+      <obj_property name="label">Master1</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="BkColor">128 128 255</obj_property>
+      <obj_property name="TextColor">230 230 230</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/uut/gnt" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">gnt[2:0]</obj_property>
+      <obj_property name="ObjectShortName">gnt[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/uut/cyc" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">cyc[2:0]</obj_property>
+      <obj_property name="ObjectShortName">cyc[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/uut/dat_out" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">dat_out[2:0]</obj_property>
+      <obj_property name="ObjectShortName">dat_out[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider13" type="divider">
+      <obj_property name="label">Master2</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="BkColor">128 128 255</obj_property>
+      <obj_property name="TextColor">230 230 230</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/uut/gnt" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">gnt[2:0]</obj_property>
+      <obj_property name="ObjectShortName">gnt[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/uut/cyc" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">cyc[2:0]</obj_property>
+      <obj_property name="ObjectShortName">cyc[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/uut/dat_out" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">dat_out[2:0]</obj_property>
+      <obj_property name="ObjectShortName">dat_out[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider21" type="divider">
+      <obj_property name="label">arb</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="BkColor">128 128 255</obj_property>
+      <obj_property name="TextColor">230 230 230</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/uut/inst_wb_arb/gnt_o" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">gnt_o[2:0]</obj_property>
+      <obj_property name="ObjectShortName">gnt_o[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/uut/inst_wb_arb/cyc_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">cyc_i[2:0]</obj_property>
+      <obj_property name="ObjectShortName">cyc_i[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/uut/inst_wb_arb/sel" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">sel[2:0]</obj_property>
+      <obj_property name="ObjectShortName">sel[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/uut/inst_wb_arb/in_sel" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">in_sel[2:0]</obj_property>
+      <obj_property name="ObjectShortName">in_sel[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/uut/inst_wb_arb/sta" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">sta</obj_property>
+      <obj_property name="ObjectShortName">sta</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/uut/inst_wb_arb/stn" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">stn</obj_property>
+      <obj_property name="ObjectShortName">stn</obj_property>
+   </wvobject>
+</wave_config>

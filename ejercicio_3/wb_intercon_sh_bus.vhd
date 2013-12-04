@@ -62,17 +62,17 @@ architecture struct of wb_intercon_sh_bus is
     generic (n_master : integer := 2);
     port(          --
       rst_i:  in  std_logic;
-      clk_i:  in  std_logic;          
+      clk_i:  in  std_logic;
       cyc_i:  in  std_logic_vector(n_master-1 downto 0);
       gnt_o:  out  std_logic_vector(n_master-1 downto 0);
-      cyc_shared_o : out  std_logic          
+      cyc_shared_o : out  std_logic
     );
   end component;
 
   --
   -- number of masters
   --
-  constant n_master:integer := 2; -- number of masters
+  constant n_master:integer := 3; -- number of masters
   --type t_output_data_bus is array (natural range <>) of std_logic_vector(15 downto 0);
   type output_data_bus is array (n_master-1 downto 0) of std_logic_vector(15 downto 0);
   --
@@ -139,15 +139,15 @@ begin
 
   inst_wb_arb:wb_arb
     generic map (n_master)
-      port map(
-     --
-    -- wishbone signals
-    --
-    rst_i => rst_i,
-    clk_i => clk_i,
-    cyc_i => cyc,
-    gnt_o => gnt,
-    cyc_shared_o => cyc_shared
+    port map(
+      --
+      -- wishbone signals
+      --
+      rst_i => rst_i,
+      clk_i => clk_i,
+      cyc_i => cyc,
+      gnt_o => gnt,
+      cyc_shared_o => cyc_shared
     );
 
   --
@@ -157,8 +157,9 @@ begin
   process(gnt,stb)
   begin
     case gnt is
-      when "01" => stb_out <= stb(0);
-      when "10" => stb_out <= stb(1);
+      when "001" => stb_out <= stb(0);
+      when "010" => stb_out <= stb(1);
+      when "100" => stb_out <= stb(2);
       when others => stb_out <= '0';
     end case;
   end process;
@@ -166,8 +167,9 @@ begin
   process(gnt,we)
   begin
     case gnt is
-      when "01" => we_out <= we(0);
-      when "10" => we_out <= we(1);
+      when "001" => we_out <= we(0);
+      when "010" => we_out <= we(1);
+      when "100" => we_out <= we(2);
       when others => we_out <= '0';
     end case;
   end process;
@@ -175,14 +177,16 @@ begin
   process(gnt,dat_out)
   begin
     case gnt is
-      when "01" => dat_master <= dat_out(0);
-      when "10" => dat_master <= dat_out(1);
+      when "001" => dat_master <= dat_out(0);
+      when "010" => dat_master <= dat_out(1);
+      when "100" => dat_master <= dat_out(2);
       when others => dat_master <= (others=>'0');
     end case;
   end process;
 
   ack_master(0) <= ack and gnt(0);
   ack_master(1) <= ack and gnt(1);
+  ack_master(2) <= ack and gnt(2);
 
 
   rst_i <= pin_reset;

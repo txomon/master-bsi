@@ -32,6 +32,7 @@ architecture behavioral of wb_arb is
   -- Internal signals to use with decoders
   signal cyc, gnt : std_logic;
   signal sel, in_sel : std_logic_vector(n_master-1 downto 0);
+  constant zeros : std_logic_vector(n_master-1 downto 0) := (others => '0');
 begin
   --
   -- State machine
@@ -59,10 +60,13 @@ begin
     end if;
   end process;
 
-
+  with sta select
+  cyc_shared_o <= '1' when wait_master,
+                  '0' when others;
   -- Control signals
   gnt_o <= sel;
 
+  cyc <= '1' when ((sel and cyc_i) xor sel) = zeros else '0';
 
   -- Selection must be maintained within the state
   process(clk_i)

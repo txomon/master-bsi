@@ -31,7 +31,7 @@ architecture behavioral of wb_arb is
 
   -- Internal signals to use with decoders
   signal cyc, gnt : std_logic;
-  signal sel, in_sel : std_logic_vector(n_master-1 downto 0);
+  signal sel, in_sel, sel_sta : std_logic_vector(n_master-1 downto 0);
 begin
   --
   -- State machine
@@ -40,13 +40,13 @@ begin
   begin
     case(sta) is
     when grant_master =>
-      if cyc = '1' then
-        stn <= wait_master;
-      else
+      if sel_sta = conv_std_logic_vector(0, n_master-1) then
         stn <= grant_master;
+      else
+        stn <= wait_master;
       end if;
     when wait_master =>
-      if cyc = '0' then
+      if sel_sta = conv_std_logic_vector(0, n_master-1) then
         stn <= grant_master;
       else
         stn <= wait_master;
@@ -66,7 +66,8 @@ begin
   cyc_shared_o <= '1' when cyc ='1' else
                   '0';
   -- Control signals
-  gnt_o <= sel and cyc_i;
+  sel_sta <= sel and cyc_i;
+  gnt_o <= sel_sta;
 
   -- Generate control signal for states, gnt and cyc
 
@@ -95,10 +96,8 @@ begin
     if rising_edge(clk_i) then
       if sta = grant_master then
         sel <= in_sel;
-      elsif sta = wait_master then
-        if stn = grant_master then
-          sel <= in_sel;
-        end if;
+      elsif stn = grant_master then
+        sel <= in_sel;
       end if;
     end if;
   end process;

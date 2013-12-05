@@ -3,7 +3,7 @@
    <wave_state>
    </wave_state>
    <db_ref_list>
-      <db_ref path="/home/javier/proyectos/master/master-bsi/ejercicio_3/testbench_isim_beh.wdb" id="1" type="auto">
+      <db_ref path="/home/javier/proyectos/master/master-bsi/ejercicio_3/testbench_isim_beh1.wdb" id="1" type="auto">
          <top_modules>
             <top_module name="std_logic_1164" />
             <top_module name="std_logic_arith" />
@@ -12,7 +12,7 @@
          </top_modules>
       </db_ref>
    </db_ref_list>
-   <WVObjectSize size="26" />
+   <WVObjectSize size="24" />
    <wvobject fp_name="/testbench/pin_reset" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">pin_reset</obj_property>
       <obj_property name="ObjectShortName">pin_reset</obj_property>
@@ -21,13 +21,18 @@
       <obj_property name="ElementShortName">pin_clock_50</obj_property>
       <obj_property name="ObjectShortName">pin_clock_50</obj_property>
    </wvobject>
-   <wvobject fp_name="/testbench/pin_leds" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">pin_leds[7:0]</obj_property>
-      <obj_property name="ObjectShortName">pin_leds[7:0]</obj_property>
+   <wvobject fp_name="/testbench/uut/inst_wb_slave_interface_leds/leds" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">leds[7:0]</obj_property>
+      <obj_property name="ObjectShortName">leds[7:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/testbench/pin_clock_50_period" type="other" db_ref_id="1">
-      <obj_property name="ElementShortName">pin_clock_50_period</obj_property>
-      <obj_property name="ObjectShortName">pin_clock_50_period</obj_property>
+   <wvobject fp_name="/testbench/uut/inst_wb_slave_interface_leds/dat_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">dat_i[15:0]</obj_property>
+      <obj_property name="ObjectShortName">dat_i[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/uut/inst_wb_slave_interface_leds/cyc_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">cyc_i</obj_property>
+      <obj_property name="ObjectShortName">cyc_i</obj_property>
    </wvobject>
    <wvobject fp_name="divider5" type="divider">
       <obj_property name="label">Master0</obj_property>
@@ -35,17 +40,10 @@
       <obj_property name="BkColor">128 128 255</obj_property>
       <obj_property name="TextColor">230 230 230</obj_property>
    </wvobject>
-   <wvobject fp_name="/testbench/uut/cyc" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cyc[2:0]</obj_property>
-      <obj_property name="ObjectShortName">cyc[2:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/testbench/uut/gnt" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">gnt[2:0]</obj_property>
-      <obj_property name="ObjectShortName">gnt[2:0]</obj_property>
-   </wvobject>
    <wvobject fp_name="/testbench/uut/dat_out" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">dat_out[2:0]</obj_property>
       <obj_property name="ObjectShortName">dat_out[2:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/testbench/uut/\gen_master(0)\/inst_wb_master_interface_counter/act_wb" type="other" db_ref_id="1">
       <obj_property name="ElementShortName">act_wb</obj_property>
@@ -57,17 +55,10 @@
       <obj_property name="BkColor">128 128 255</obj_property>
       <obj_property name="TextColor">230 230 230</obj_property>
    </wvobject>
-   <wvobject fp_name="/testbench/uut/gnt" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">gnt[2:0]</obj_property>
-      <obj_property name="ObjectShortName">gnt[2:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/testbench/uut/cyc" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cyc[2:0]</obj_property>
-      <obj_property name="ObjectShortName">cyc[2:0]</obj_property>
-   </wvobject>
    <wvobject fp_name="/testbench/uut/dat_out" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">dat_out[2:0]</obj_property>
       <obj_property name="ObjectShortName">dat_out[2:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/testbench/uut/\gen_master(1)\/inst_wb_master_interface_counter/act_wb" type="other" db_ref_id="1">
       <obj_property name="ElementShortName">act_wb</obj_property>
@@ -79,17 +70,10 @@
       <obj_property name="BkColor">128 128 255</obj_property>
       <obj_property name="TextColor">230 230 230</obj_property>
    </wvobject>
-   <wvobject fp_name="/testbench/uut/gnt" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">gnt[2:0]</obj_property>
-      <obj_property name="ObjectShortName">gnt[2:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/testbench/uut/cyc" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">cyc[2:0]</obj_property>
-      <obj_property name="ObjectShortName">cyc[2:0]</obj_property>
-   </wvobject>
    <wvobject fp_name="/testbench/uut/dat_out" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">dat_out[2:0]</obj_property>
       <obj_property name="ObjectShortName">dat_out[2:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/testbench/uut/\gen_master(2)\/inst_wb_master_interface_counter/act_wb" type="other" db_ref_id="1">
       <obj_property name="ElementShortName">act_wb</obj_property>
@@ -108,6 +92,18 @@
    <wvobject fp_name="/testbench/uut/inst_wb_arb/cyc_i" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">cyc_i[2:0]</obj_property>
       <obj_property name="ObjectShortName">cyc_i[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/uut/inst_wb_arb/cyc_shared_o" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">cyc_shared_o</obj_property>
+      <obj_property name="ObjectShortName">cyc_shared_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/uut/inst_wb_arb/cyc" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">cyc</obj_property>
+      <obj_property name="ObjectShortName">cyc</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/uut/inst_wb_arb/gnt" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">gnt</obj_property>
+      <obj_property name="ObjectShortName">gnt</obj_property>
    </wvobject>
    <wvobject fp_name="/testbench/uut/inst_wb_arb/sel" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">sel[2:0]</obj_property>

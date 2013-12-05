@@ -20,12 +20,12 @@ entity wb_slave_interface_leds is
       rst_i:  in  std_logic;      -- wb : global reset signal
        ack_o:  out std_logic;      -- wb : ack from to the master
       --adr_i:  in  std_logic_vector(15 downto 0 );-- wb : adress,
-                										-- not used in this core
+                  									-- not used in this core
         clk_i:  in  std_logic;      -- wb : global bus clock
           dat_i:  in std_logic_vector(15 downto 0 ); -- wb : 16 bits data bus
-                					-- input
+                  				-- input
           dat_o:  out std_logic_vector(15 downto 0 ); -- wb : 16 bits data bus
-                					-- ouput
+                  				-- ouput
          stb_i:  in  std_logic;      -- wb : access qualify from the master
       cyc_i:  in  std_logic;      -- wb : access qualify
          we_i:   in  std_logic;      -- wb : read/write request
@@ -83,7 +83,7 @@ with act_wb select
 
 with act_wb select
   en_reg <= '1' when write_data,
-         '0' when others;        
+         '0' when others;
 --
 -- registers synchronous load
 --

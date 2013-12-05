@@ -32,7 +32,6 @@ architecture behavioral of wb_arb is
   -- Internal signals to use with decoders
   signal cyc, gnt : std_logic;
   signal sel, in_sel : std_logic_vector(n_master-1 downto 0);
-  constant zeros : std_logic_vector(n_master-1 downto 0) := (others => '0');
 begin
   --
   -- State machine
@@ -41,12 +40,16 @@ begin
   begin
     case(sta) is
     when grant_master =>
-      if gnt = '1' then
+      if cyc = '1' then
         stn <= wait_master;
+      else
+        stn <= grant_master;
       end if;
     when wait_master =>
       if cyc = '0' then
         stn <= grant_master;
+      else
+        stn <= wait_master;
       end if;
     end case;
   end process;
@@ -60,13 +63,31 @@ begin
     end if;
   end process;
 
-  with sta select
-  cyc_shared_o <= '1' when wait_master,
-                  '0' when others;
+  cyc_shared_o <= '1' when cyc ='1' else
+                  '0';
   -- Control signals
-  gnt_o <= sel;
+  gnt_o <= sel and cyc_i;
 
-  cyc <= '1' when ((sel and cyc_i) xor sel) = zeros else '0';
+  -- Generate control signal for states, gnt and cyc
+
+  gnt <= '0' when in_sel = conv_std_logic_vector(0, n_master-1) else
+         '1';
+
+  cyc <= '0' when in_sel = conv_std_logic_vector(0, n_master-1) else
+         '1';
+--  process(sel)
+--  begin
+--    -- If the selection is none, no priority
+--    if sel = conv_std_logic_vector(0, n_master-1) then
+--      gnt <= '0';
+--      cyc <= '0';
+--    -- If there is priority
+--    else
+--      cyc <= '1';
+--      gnt <= '1';
+--    end if;
+--  end process;
+
 
   -- Selection must be maintained within the state
   process(clk_i)
@@ -74,10 +95,15 @@ begin
     if rising_edge(clk_i) then
       if sta = grant_master then
         sel <= in_sel;
+      elsif sta = wait_master then
+        if stn = grant_master then
+          sel <= in_sel;
+        end if;
       end if;
     end if;
   end process;
 
+  -- Always the most prioritized one decoder
   in_sel <= (0=>'1', others=>'0') when cyc_i(0) = '1' else
             (1=>'1', others=>'0') when cyc_i(1) = '1' else
             (2=>'1', others=>'0') when cyc_i(2) = '1' else

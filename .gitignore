@@ -66,3 +66,6 @@ xlnx*/
 !fichlectura.txt
 vhdl_practicas
 *.blc
+*.vhi
+*.sym
+*.spl

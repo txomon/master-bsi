@@ -1,0 +1,14 @@
+net clock     loc = c9  | iostandard = lvcmos33 | period = 20 ns;
+net reset     loc = k17 | iostandard = lvcmos33 | pulldown;
+net leds<0>   loc = f9  | iostandard = lvcmos33;
+net leds<1>   loc = e9  | iostandard = lvcmos33;
+net leds<2>   loc = d11 | iostandard = lvcmos33;
+net leds<3>   loc = c11 | iostandard = lvcmos33;
+net leds<4>   loc = f11 | iostandard = lvcmos33;
+net leds<5>   loc = e11 | iostandard = lvcmos33;
+net leds<6>   loc = e12 | iostandard = lvcmos33;
+net leds<7>   loc = f12 | iostandard = lvcmos33;
+net switch<0> loc = l13 | iostandard = lvcmos33 | pulldown;
+net switch<1> loc = l14 | iostandard = lvcmos33 | pulldown;
+net switch<2> loc = h18 | iostandard = lvcmos33 | pulldown;
+net switch<3> loc = n17 | iostandard = lvcmos33 | pulldown;

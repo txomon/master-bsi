@@ -43,7 +43,8 @@ architecture behavior of testbench is
     port(
          pin_reset : in  std_logic;
          pin_clock_50 : in  std_logic;
-         pin_leds : out  std_logic_vector(7 downto 0)
+         pin_leds : out  std_logic_vector(7 downto 0);
+         alarm : in std_logic
         );
     end component;
 
@@ -51,6 +52,7 @@ architecture behavior of testbench is
    --inputs
    signal pin_reset : std_logic := '0';
    signal pin_clock_50 : std_logic := '0';
+   signal alarm : std_logic := '0';
 
    --outputs
    signal pin_leds : std_logic_vector(7 downto 0);
@@ -63,6 +65,7 @@ begin
 
   -- instantiate the unit under test (uut)
    uut: wb_intercon_sh_bus port map (
+          alarm => alarm,
           pin_reset => pin_reset,
           pin_clock_50 => pin_clock_50,
           pin_leds => pin_leds
@@ -90,6 +93,8 @@ begin
 
       -- insert stimulus here
 
+      wait for 2 ms;
+      alarm <= '1';
       wait;
    end process;
 

@@ -1,178 +1,189 @@
 --
 -------------------------------------------------------------------------------
--- description    : it writes a squence of numbers to an slave.
---
+-- Description    : It writes a squence of numbers to an slave. 
+--                  
 -------------------------------------------------------------------------------
--- entity for wb_master_interface unit                                    --
+-- Entity for wb_master_interface Unit 		                       			  --
 -------------------------------------------------------------------------------
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.std_logic_arith.all;
-use ieee.std_logic_unsigned.all;
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
-library work;
+library WORK;
 
 entity wb_master_interface_alarm is
-  generic (count_module_factor : integer := 20);       -- counter prescaler
-  port (
-    --
-    -- wishbone signals
-    --
-    rst_i:  in  std_logic;    -- wb : global reset signal
-    ack_i:  in std_logic;    -- wb : ack from the slave
-    -- adr_o:  out  std_logic_vector(15 downto 0 ); -- wb : adresss
-    -- not used in this core
-    clk_i:  in  std_logic;    -- wb : global bus clock
-    dat_i:  in  std_logic_vector(15 downto 0 );     -- wb : 16 bits
-    -- data bus input
-    dat_o:  out  std_logic_vector(15 downto 0 );   -- wb : 16 bits
-    -- data bus output
-    stb_o:  out  std_logic;    -- wb : access qualify
-    we_o:   out  std_logic;    -- wb : read/write request
-    cyc_o:   out  std_logic;  -- wb : bus request to the arbitrer
-    gnt_i:   in  std_logic    -- wb : bus grant from the arbitrer
-  );
+	generic (count_module_factor : integer := 20); 
+    Port (  
+	 			--
+				-- WISHBONE SIGNALS
+				--
+				RST_I:  in  std_logic;		-- WB : Global RESET signal
+				ALARM: in std_logic;
+	 			ACK_I:  in std_logic;		-- WB : Ack from the slave
+				--ADR_O:  out  std_logic_vector(15 downto 0 ); 	-- WB : Adresss
+													-- not used in this core
+	        	CLK_I:  in  std_logic;		-- WB : Global bus clock
+  				DAT_I:  in  std_logic_vector(15 downto 0 ); 		-- WB : 16 bits 
+													-- data bus input
+          	DAT_O:  out  std_logic_vector(15 downto 0 ); 	-- WB : 16 bits 
+													-- data bus output
+          	STB_O:  out  std_logic;		-- WB : Access qualify 
+          	WE_O:   out  std_logic;		-- WB : Read/write request
+          	CYC_O:   out  std_logic;	-- WB : Bus request to the arbitrer 
+          	GNT_I:   in  std_logic		-- WB : Bus grant from the arbitrer
+			);
 end wb_master_interface_alarm;
 
-architecture behavioral of wb_master_interface_alarm is
-  --
-  --  internal signals
-  --
-  -- constant count_module : integer := 100*count_module_factor;    -- simulation
-  constant count_module : integer := 1000000*count_module_factor;  -- prototype
-  -- one master transfer each tclk * 1000000*count_module_factor
-  -- if tclk = 20 ns => one transfer each 0,4 s if count_module_factor = 20
-  signal count: integer range 0 to count_module;        -- prescaler value
-                                                        -- for the count value
-  signal temporal_register : integer range 0 to 64;      -- temporal register to store
-                                                        -- the data for the slave
-  signal temporal_register_ce : std_logic;              -- clock enable for the temporal
-                                                        -- register
-  signal init_transfer_node : std_logic;                -- inits the transfer to the slave
-  signal data_in_node: std_logic_vector(15 downto 0);   -- internal data in
-                                                        -- (removed by synthesis)
-  signal data_out_node: std_logic_vector(15 downto 0);  -- internal data out
-                                                        -- (removed by synthesis)
-                                                        -- makes easier architecture with more than one masters
-  signal stb_o_out : std_logic;
-  signal we_o_out : std_logic;
-  signal ack_i_in : std_logic;
+architecture struct of wb_master_interface_alarm is
+--
+--	INTERNAL SIGNALS
+--
+constant count_module : INTEGER := 1*count_module_factor;		-- Simulation
+--constant count_module : INTEGER := 1000000*count_module_factor;	-- Prototype
+-- one master transfer each Tclk * 1000000*count_module_factor
+-- if Tclk = 20 ns => one transfer each 0,4 s if count_module_factor = 20
 
-  --
-  -- wishbone master interface control state machine
-  --
+signal COUNT: INTEGER range 0 to count_module;
+																			-- for the count value
+signal TEMPORAL_REGISTER : INTEGER range 0 to 255;			-- Temporal register to store 
+																			-- the data for the slave
+signal TEMPORAL_REGISTER_CE : std_logic;						-- Clock enable for the temporal 
+																			-- register
+signal INIT_TRANSFER_NODE : std_logic;							-- Inits the transfer to the slave
+signal DATA_IN_NODE: std_logic_vector(15 downto 0); 	-- INTERNAL DATA IN 
+																		-- (Removed by synthesis)
+signal DATA_OUT_NODE: std_logic_vector(15 downto 0);	-- INTERNAL DATA OUT 
+																		-- (Removed by synthesis)
+-- makes easier architecture with more than one masters
+signal STB_O_OUT : std_logic;							
+signal WE_O_OUT : std_logic;							
+signal ACK_I_IN : std_logic;							
 
-  type wb_state is (init_transfer_wait, ack_wait);
-  signal act_wb : wb_state;
-  signal next_wb: wb_state;
+--
+-- WISHBONE MASTER INTERFACE CONTROL STATE MACHINE
+--
+
+type wb_state is (init_transfer_wait, ack_wait); 
+signal act_wb : wb_state;
+signal next_wb: wb_state;
 
 
 begin
 
-  we_o <= we_o_out when gnt_i='1' else '0';
-  stb_o <= stb_o_out when gnt_i='1' else '0';
-  ack_i_in <= ack_i when gnt_i='1' else '0';
+WE_O <= WE_O_OUT when GNT_I='1' else '0';
+STB_O <= STB_O_OUT when GNT_I='1' else '0';
+ACK_I_IN <= ACK_I when GNT_I='1' else '0';
 
-  -- wishbone bus composition
-  data_in_node <= dat_i(15 downto 0);
-  dat_o <= data_out_node when (we_o_out ='1' and
-  stb_o_out ='1' and gnt_i='1') else (others => '0');
-  --
-  -- wishbone master interface control
-  --
-  master_control: process (rst_i, clk_i)
-  begin
-    if rst_i = '1' then
-      act_wb <= init_transfer_wait;
-      elsif (clk_i'event and clk_i = '1') then
-      act_wb <= next_wb;
-    end if;
-  end process;
+	-- WISHBONE BUS COMPOSITION
+	DATA_IN_NODE <= DAT_I(15 downto 0);
+	DAT_O <= DATA_OUT_NODE when (WE_O_OUT ='1' and 
+	STB_O_OUT ='1' and GNT_I='1') else (others => '0');
+-- 
+-- WISHBONE MASTER INTERFACE CONTROL
+--
+master_control: process (RST_I, CLK_I)
+begin  
+	if RST_I = '1' then
+		act_wb <= init_transfer_wait;
+  	elsif (CLK_I'event and CLK_I = '1') then
+		act_wb <= next_wb;
+	end if;
+end process;
 
-  process(act_wb,init_transfer_node,ack_i_in)
-  begin
-      case act_wb is
-        when init_transfer_wait =>
-          -- the state machine waits for the internal
-          -- init_transfer_node request from the internal logic.
-          -- then performs an access to the wb bus.
-          if init_transfer_node ='1' then
-            next_wb <= ack_wait;
-          else
-            next_wb <= init_transfer_wait;
-          end if;
+process(act_wb,INIT_TRANSFER_NODE,ACK_I_IN)
+begin
+		case act_wb is
+			when init_transfer_wait =>
+				-- The state machine waits for the internal
+				-- INIT_TRANSFER_NODE request from the internal logic.
+				-- Then performs an access to the WB bus.
+				if INIT_TRANSFER_NODE ='1' then
+					next_wb <= ack_wait;
+			 	else
+					next_wb <= init_transfer_wait;
+				end if;
 
-        when ack_wait =>
-          -- in this state the stb_out and the cyc_o
-          --  are set. the stb_out is written to the  wb
-          -- when the gnt_i='1'. the state changes when
-          -- the ack from the slave is received.
-          if ack_i_in ='1' then
-            next_wb <= init_transfer_wait;
-          else
-            next_wb <= ack_wait;
-          end if;
-        end case;
-   end process;
+			when ack_wait =>
+				-- In this state the STB_OUT and the CYC_O
+				--	are set. The STB_OUT is written to the	wb
+				-- when the GNT_I='1'. The state changes when
+				-- the ACK from the slave is received.
+				if ACK_I_IN ='1' then
+					next_wb <= init_transfer_wait;
+				else
+					next_wb <= ack_wait;
+				end if;
+	  	end case;
+ end process;
 
-  with act_wb select
-      stb_o_out <=  '1' when ack_wait,
-                    '0' when others;
+with act_wb select
+	STB_O_OUT <= '1' when ack_wait,
+				'0' when others;
 
-  with act_wb select
-    cyc_o <=  '1' when ack_wait,
-              '0' when others;
+with act_wb select
+	CYC_O <= '1' when ack_wait,
+				'0' when others;
 
-  we_o_out <= '1';
+	WE_O_OUT <= '1';
 
+	
+--
+-- TEMPORAL COUNTER
+--
+ 
+process (CLK_I, RST_I) 
+begin
 
-  --
-  -- temporal counter prescaler
-  --
+   if RST_I='1' then 
+      TEMPORAL_REGISTER_CE <= '0';
+   elsif CLK_I'event and CLK_I = '1' then
+	
+		if ALARM ='1' then
+			TEMPORAL_REGISTER_CE <= '1';
+		else
+			TEMPORAL_REGISTER_CE <= '0';
+		end if;
+	end if;
 
-  process (clk_i, rst_i)
-  begin
-     if rst_i='1' then
-        count <= 0;
-     elsif clk_i'event and clk_i = '1' then
-      count <= count + 1;
-        if count=count_module-1 then
-        count <= 0;
-        temporal_register_ce <= '1';
-        else
-        temporal_register_ce <= '0';
-        end if;
-     end if;
-  end process;
+end process;
 
-  --
-  -- temporal counter (data to transfer to slave)
-  --
-
-  process (clk_i, rst_i)
-  begin
-     if rst_i='1' then
-      -- reset values
-        temporal_register <= 0;
-      init_transfer_node <= '0';
-     elsif clk_i'event and clk_i='1' then
-      -- init the transference when the value changes
-      if temporal_register_ce='1' then
-        init_transfer_node <= '1';
-        -- only count until 64
-          if temporal_register = 64 then
-          temporal_register <= 0;
-        else
-          temporal_register <= temporal_register + 1;
-        end if;
-      else
-        init_transfer_node <= '0';
-        temporal_register <= temporal_register;
-      end if;
-    end if;
-  end process;
-  --
-  -- cobinational assigments
-  --
-  data_out_node <= conv_std_logic_vector (temporal_register, 16);
-end behavioral;
+--
+-- TEMPORAL COUNTER (DATA TO TRANSFER TO SLAVE)
+--
+ 
+process (CLK_I, RST_I) 
+begin
+   if RST_I='1' then
+		-- RESET VALUES 
+      TEMPORAL_REGISTER <= 0;
+		INIT_TRANSFER_NODE <= '0';
+   elsif CLK_I'event and CLK_I='1' then
+		-- INIT THE TRANSFERENCE WHEN THE VALUE CHANGES
+		if TEMPORAL_REGISTER_CE='1' then
+			INIT_TRANSFER_NODE <= '1';
+			
+			if COUNT < count_module/2 then
+				TEMPORAL_REGISTER <= 0;
+			else
+				TEMPORAL_REGISTER <= 255;
+			end if;
+			
+			if COUNT = count_module then
+				COUNT <= 0;
+			else
+				COUNT <= COUNT + 1;
+			end if;
+			
+		else
+			INIT_TRANSFER_NODE <= '0';
+			TEMPORAL_REGISTER <= TEMPORAL_REGISTER;
+			COUNT <= 0;
+		end if;
+	end if;
+end process;
+--
+-- COBINATIONAL ASSIGMENTS
+--
+DATA_OUT_NODE <= CONV_STD_LOGIC_VECTOR (TEMPORAL_REGISTER, 16); 
+end struct;

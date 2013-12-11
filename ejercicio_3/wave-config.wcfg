@@ -3,7 +3,7 @@
    <wave_state>
    </wave_state>
    <db_ref_list>
-      <db_ref path="/home/javier/proyectos/master/master-bsi/ejercicio_3/testbench_isim_beh1.wdb" id="1" type="auto">
+      <db_ref path="/home/javier/proyectos/master/master-bsi/ejercicio_3/testbench_isim_beh.wdb" id="1" type="auto">
          <top_modules>
             <top_module name="std_logic_1164" />
             <top_module name="std_logic_arith" />
@@ -24,6 +24,7 @@
    <wvobject fp_name="/testbench/uut/inst_wb_slave_interface_leds/leds" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">leds[7:0]</obj_property>
       <obj_property name="ObjectShortName">leds[7:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/testbench/uut/inst_wb_slave_interface_leds/dat_i" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">dat_i[15:0]</obj_property>
@@ -43,9 +44,8 @@
    <wvobject fp_name="/testbench/uut/dat_out" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">dat_out[2:0]</obj_property>
       <obj_property name="ObjectShortName">dat_out[2:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/testbench/uut/\gen_master(0)\/inst_wb_master_interface_counter/act_wb" type="other" db_ref_id="1">
+   <wvobject fp_name="/testbench/uut/\gen_alarm(0)\/inst_wb_master_interface_alarm/act_wb" type="other" db_ref_id="1">
       <obj_property name="ElementShortName">act_wb</obj_property>
       <obj_property name="ObjectShortName">act_wb</obj_property>
    </wvobject>

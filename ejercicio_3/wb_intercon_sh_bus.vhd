@@ -19,7 +19,8 @@ entity wb_intercon_sh_bus is
       --
       -- leds outputs
       --
-      pin_leds:  out  std_logic_vector(7 downto 0)
+      pin_leds:  out  std_logic_vector(7 downto 0);
+      alarm : in std_logic --Alarm clock
       );
 end wb_intercon_sh_bus;
 
@@ -57,6 +58,21 @@ architecture struct of wb_intercon_sh_bus is
       cyc_o : out std_logic
     );
   end component;
+
+	component wb_master_interface_alarm
+	port(
+		rst_i : in std_logic;
+		alarm : in std_logic;
+		ack_i : in std_logic;
+		clk_i : in std_logic;
+		dat_i : in std_logic_vector(15 downto 0);
+		gnt_i : in std_logic;          
+		dat_o : out std_logic_vector(15 downto 0);
+		stb_o : out std_logic;
+		we_o : out std_logic;
+		cyc_o : out std_logic
+		);
+	end component;
 
   component wb_arb
     generic (n_master : integer := 2);
@@ -102,7 +118,25 @@ begin
   --
   -- wishbone master core (timer)
   --
-  gen_master: for i in 0 to n_master-1 generate
+  
+  gen_alarm: for i in 0 to 0 generate
+    inst_wb_master_interface_alarm: wb_master_interface_alarm
+    port map
+      (alarm => alarm,
+      rst_i => rst_i,
+      ack_i => ack_master(i),
+      --adr_o => adr(i),
+      clk_i => clk_i,
+      dat_i => dat_slave,
+      dat_o => dat_out(i),
+      stb_o => stb(i),
+      we_o => we(i),
+      cyc_o => cyc(i),
+      gnt_i => gnt(i)
+    );
+  end generate;
+  
+  gen_master: for i in 1 to n_master-1 generate
     inst_wb_master_interface_counter: wb_master_interface_counter
     generic map(
     count_module_factor => 20*(i+1))    -- display timer prescaler

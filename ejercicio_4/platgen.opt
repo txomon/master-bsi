@@ -1,5 +1,5 @@
 -p
-xc3s500eft256-4
+xc3s500efg320-4
 -lang
 vhdl
 -msg

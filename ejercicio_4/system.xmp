@@ -6,7 +6,7 @@ MHS File: system.mhs
 MSS File: system.mss
 Architecture: spartan3e
 Device: xc3s500e
-Package: ft256
+Package: fg320
 SpeedGrade: -4
 UserCmd1: 
 UserCmd1Type: 0
@@ -30,7 +30,7 @@ Processor: processor
 Executable: program/executable.elf
 Source: program/main.c
 DefaultInit: executable
-InitBram: 0
+InitBram: 1
 Active: 1
 CompilerOptLevel: 2
 GlobPtrOpt: 0

@@ -66,3 +66,8 @@ xlnx*/
 !fichlectura.txt
 vhdl_practicas
 *.blc
+XpsGuiSessionLock
+*.make
+*.xreport
+*.lst
+simgen.opt

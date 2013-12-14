@@ -69,3 +69,8 @@ vhdl_practicas
 *.vhi
 *.sym
 *.spl
+XpsGuiSessionLock
+*.make
+*.xreport
+*.lst
+simgen.opt

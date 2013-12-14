@@ -1,0 +1,22 @@
+processor
+PROGRAM_SOURCES = program/main.c 
+PROGRAM_HEADERS = 
+PROGRAM_CC = mb-gcc
+PROGRAM_CC_SIZE = mb-size
+PROGRAM_CC_OPT = -O2
+PROGRAM_CFLAGS = 
+PROGRAM_CC_SEARCH = # -B
+PROGRAM_LIBPATH = -L./processor/lib/ # -L
+PROGRAM_INCLUDES = -I./processor/include/ # -I
+PROGRAM_LFLAGS = # -l
+PROGRAM_LINKER_SCRIPT = 
+PROGRAM_CC_DEBUG_FLAG =  -g 
+PROGRAM_CC_PROFILE_FLAG = # -pg
+PROGRAM_CC_GLOBPTR_FLAG= # -mxl-gp-opt
+PROGRAM_MODE = executable
+PROGRAM_LIBG_OPT = -$(PROGRAM_MODE) processor
+PROGRAM_CC_INFERRED_FLAGS= -mxl-soft-mul -mxl-barrel-shift -mxl-pattern-compare -mno-xl-soft-div -mcpu=v8.00.a 
+PROGRAM_CC_START_ADDR_FLAG=  # -Wl,-defsym -Wl,_TEXT_START_ADDR=
+PROGRAM_CC_STACK_SIZE_FLAG=  # -Wl,-defsym -Wl,_STACK_SIZE=
+PROGRAM_CC_HEAP_SIZE_FLAG=  # -Wl,-defsym -Wl,_HEAP_SIZE=
+                  $(PROGRAM_CC_INFERRED_FLAGS)  \

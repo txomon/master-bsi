@@ -59,20 +59,20 @@ architecture struct of wb_intercon_sh_bus is
     );
   end component;
 
-	component wb_master_interface_alarm
-	port(
-		rst_i : in std_logic;
-		alarm : in std_logic;
-		ack_i : in std_logic;
-		clk_i : in std_logic;
-		dat_i : in std_logic_vector(15 downto 0);
-		gnt_i : in std_logic;          
-		dat_o : out std_logic_vector(15 downto 0);
-		stb_o : out std_logic;
-		we_o : out std_logic;
-		cyc_o : out std_logic
-		);
-	end component;
+  component wb_master_interface_alarm
+  port(
+    rst_i : in std_logic;
+    alarm : in std_logic;
+    ack_i : in std_logic;
+    clk_i : in std_logic;
+    dat_i : in std_logic_vector(15 downto 0);
+    gnt_i : in std_logic;
+    dat_o : out std_logic_vector(15 downto 0);
+    stb_o : out std_logic;
+    we_o : out std_logic;
+    cyc_o : out std_logic
+    );
+  end component;
 
   component wb_arb
     generic (n_master : integer := 2);
@@ -118,7 +118,7 @@ begin
   --
   -- wishbone master core (timer)
   --
-  
+
   gen_alarm: for i in 0 to 0 generate
     inst_wb_master_interface_alarm: wb_master_interface_alarm
     port map
@@ -135,7 +135,7 @@ begin
       gnt_i => gnt(i)
     );
   end generate;
-  
+
   gen_master: for i in 1 to n_master-1 generate
     inst_wb_master_interface_counter: wb_master_interface_counter
     generic map(

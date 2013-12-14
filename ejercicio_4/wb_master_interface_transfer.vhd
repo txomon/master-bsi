@@ -1,20 +1,20 @@
 ----------------------------------------------------------------------------------
--- company: 
--- engineer: 
--- 
--- create date:    14:36:48 12/14/2013 
--- design name: 
--- module name:    wb_master_interface_transfer - behavioral 
--- project name: 
--- target devices: 
--- tool versions: 
--- description: 
+-- company:
+-- engineer:
 --
--- dependencies: 
+-- create date:    14:36:48 12/14/2013
+-- design name:
+-- module name:    wb_master_interface_transfer - behavioral
+-- project name:
+-- target devices:
+-- tool versions:
+-- description:
 --
--- revision: 
+-- dependencies:
+--
+-- revision:
 -- revision 0.01 - file created
--- additional comments: 
+-- additional comments:
 --
 ----------------------------------------------------------------------------------
 library ieee;
@@ -45,9 +45,9 @@ entity wb_master_interface_transfer is
     clk_i :in std_logic; -- wb : global bus clock
     dat_i :in std_logic_vector(15 downto 0 ); -- wb : 16 bits
                                               -- data bus input
-    dat_o :out std_logic_vector(15 downto 0 ); -- wb : 16 bits 
+    dat_o :out std_logic_vector(15 downto 0 ); -- wb : 16 bits
                                               -- data bus output
-    stb_o :out std_logic; -- wb : access qualify 
+    stb_o :out std_logic; -- wb : access qualify
     we_o :out std_logic; -- wb : read/write request
     cyc_o :out std_logic; -- wb : bus request to the arbitrer
     gnt_i :in std_logic -- wb : bus grant from the arbitrer

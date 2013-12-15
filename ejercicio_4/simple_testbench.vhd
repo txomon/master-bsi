@@ -2,10 +2,10 @@
 -- company:
 -- engineer:
 --
--- create date:   16:05:18 11/27/2013
+-- create date:   22:27:33 12/15/2013
 -- design name:
--- module name:   /home/javier/proyectos/master/master-bsi/ejercicio_3/testbench.vhd
--- project name:  ejercicio_3
+-- module name:   /home/javier/proyectos/master/master-bsi/ejercicio_4/simple_testbench.vhd
+-- project name:  ejercicio_4
 -- target device:
 -- tool versions:
 -- description:
@@ -32,10 +32,10 @@ use ieee.std_logic_1164.all;
 -- arithmetic functions with signed or unsigned values
 --use ieee.numeric_std.all;
 
-entity testbench is
-end testbench;
+entity simple_testbench is
+end simple_testbench;
 
-architecture behavior of testbench is
+architecture behavior of simple_testbench is
 
     -- component declaration for the unit under test (uut)
 
@@ -44,7 +44,10 @@ architecture behavior of testbench is
          pin_reset : in  std_logic;
          pin_clock_50 : in  std_logic;
          pin_leds : out  std_logic_vector(7 downto 0);
-         alarm : in std_logic
+         m1trigger : in  std_logic;
+         data : in  std_logic_vector(3 downto 0);
+         m2trigger : in  std_logic;
+         s1trigger : in  std_logic
         );
     end component;
 
@@ -52,7 +55,10 @@ architecture behavior of testbench is
    --inputs
    signal pin_reset : std_logic := '0';
    signal pin_clock_50 : std_logic := '0';
-   signal alarm : std_logic := '0';
+   signal m1trigger : std_logic := '0';
+   signal data : std_logic_vector(3 downto 0) := (others => '0');
+   signal m2trigger : std_logic := '0';
+   signal s1trigger : std_logic := '0';
 
    --outputs
    signal pin_leds : std_logic_vector(7 downto 0);
@@ -65,10 +71,13 @@ begin
 
   -- instantiate the unit under test (uut)
    uut: wb_intercon_sh_bus port map (
-          alarm => alarm,
           pin_reset => pin_reset,
           pin_clock_50 => pin_clock_50,
-          pin_leds => pin_leds
+          pin_leds => pin_leds,
+          m1trigger => m1trigger,
+          data => data,
+          m2trigger => m2trigger,
+          s1trigger => s1trigger
         );
 
    -- clock process definitions
@@ -83,18 +92,15 @@ begin
 
    -- stimulus process
    stim_proc: process
-   begin
-      pin_reset <= '1';
+   begin    
       -- hold reset state for 100 ns.
-      wait for 100 ns;
-      pin_reset <= '0';
+      wait for 100 ns;  
 
-      wait for pin_clock_50_period*10;
+      wait for pin_clock_50_period*50;
 
       -- insert stimulus here
 
-      wait for 2 ms;
-      alarm <= '1';
+
       wait;
    end process;
 

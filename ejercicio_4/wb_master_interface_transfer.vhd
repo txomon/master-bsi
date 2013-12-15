@@ -31,8 +31,8 @@ use ieee.std_logic_1164.all;
 
 entity wb_master_interface_transfer is
   generic (
-    read_slave :in std_logic_vector(15 downto 0);
-    write_slave :in std_logic_vector(15 downto 0)
+    read_slave :in std_logic_vector(15 downto 0); -- Address of the slave to read from
+    write_slave :in std_logic_vector(15 downto 0) -- Address of the slave to write to
   );
   port (
     active :in std_logic; -- Activation of the master

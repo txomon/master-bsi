@@ -13,15 +13,13 @@ use ieee.std_logic_unsigned.all;
 library work;
 
 entity wb_intercon_sh_bus is
-    port (
-      pin_reset:  in  std_logic;    -- external reset signal
-        pin_clock_50:  in  std_logic;    -- external clock signal
-      --
-      -- leds outputs
-      --
-      pin_leds:  out  std_logic_vector(7 downto 0);
-      alarm : in std_logic --Alarm clock
-      );
+  port (
+    pin_reset:  in  std_logic;    -- external reset signal
+    pin_clock_50:  in  std_logic;    -- external clock signal
+    -- leds outputs
+    pin_leds:  out  std_logic_vector(7 downto 0);
+    alarm : in std_logic --Alarm clock
+  );
 end wb_intercon_sh_bus;
 
 architecture struct of wb_intercon_sh_bus is
@@ -31,7 +29,7 @@ architecture struct of wb_intercon_sh_bus is
   component wb_slave_interface_leds
     port(
       rst_i : in std_logic;
-      --adr_i : in std_logic;
+      adr_i : in std_logic;
       clk_i : in std_logic;
       dat_i : in std_logic_vector(15 downto 0);
       stb_i : in std_logic;
@@ -59,14 +57,15 @@ architecture struct of wb_intercon_sh_bus is
     );
   end component;
 
-  component wb_master_interface_alarm
+  component wb_master_interface_transfer
   port(
+    active : in std_logic;
     rst_i : in std_logic;
-    alarm : in std_logic;
     ack_i : in std_logic;
     clk_i : in std_logic;
     dat_i : in std_logic_vector(15 downto 0);
     gnt_i : in std_logic;
+    adr_o : out std_logic_vector(15 downto 0);
     dat_o : out std_logic_vector(15 downto 0);
     stb_o : out std_logic;
     we_o : out std_logic;
@@ -75,7 +74,7 @@ architecture struct of wb_intercon_sh_bus is
   end component;
 
   component wb_arb
-    generic (n_master : integer := 2);
+    generic (n_master : integer := 1);
     port(          --
       rst_i:  in  std_logic;
       clk_i:  in  std_logic;
@@ -88,7 +87,7 @@ architecture struct of wb_intercon_sh_bus is
   --
   -- number of masters
   --
-  constant n_master:integer := 3; -- number of masters
+  constant n_master:integer := 2; -- number of masters
   --type t_output_data_bus is array (natural range <>) of std_logic_vector(15 downto 0);
   type output_data_bus is array (n_master-1 downto 0) of std_logic_vector(15 downto 0);
   --
@@ -119,13 +118,13 @@ begin
   -- wishbone master core (timer)
   --
 
-  gen_alarm: for i in 0 to 0 generate
-    inst_wb_master_interface_alarm: wb_master_interface_alarm
+  gen_transfer: for i in 0 to 0 generate
+    inst_wb_master_interface_transfer: wb_master_interface_transfer
     port map
-      (alarm => alarm,
+      (active => active,
       rst_i => rst_i,
       ack_i => ack_master(i),
-      --adr_o => adr(i),
+      adr_o => adr(i),
       clk_i => clk_i,
       dat_i => dat_slave,
       dat_o => dat_out(i),
@@ -220,7 +219,6 @@ begin
 
   ack_master(0) <= ack and gnt(0);
   ack_master(1) <= ack and gnt(1);
-  ack_master(2) <= ack and gnt(2);
 
 
   rst_i <= pin_reset;

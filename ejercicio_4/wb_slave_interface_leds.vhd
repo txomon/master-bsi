@@ -1,101 +1,143 @@
 --
 -------------------------------------------------------------------------------
--- description    : interface for two 7 segment display (with memory)
+-- Description    : Interface for two 7 segment display (with memory)
 --
 -------------------------------------------------------------------------------
--- entity for wb_slave_interface unit                                        --
+-- Entity for wb_slave_interface Unit                                        --
 -------------------------------------------------------------------------------
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.std_logic_arith.all;
-use ieee.std_logic_unsigned.all;
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
-library work;
+library WORK;
 
 entity wb_slave_interface_leds is
-    port (
+   generic(
+      addr: std_logic_vector(3 downto 0):="0001");  
+    Port (
        --
-      -- wishbone signals
+      -- WISHBONE SIGNALS
       --
-      rst_i:  in  std_logic;      -- wb : global reset signal
-       ack_o:  out std_logic;      -- wb : ack from to the master
-      --adr_i:  in  std_logic_vector(15 downto 0 );-- wb : adress,
+      ADDR_I: in std_logic_vector (3 downto 0);
+      
+      RST_I:  in  std_logic;      -- WB : Global RESET signal
+       ACK_O:  out std_logic;      -- WB : Ack from to the master
+      --ADR_I:  in  std_logic_vector(15 downto 0 );-- WB : Adress,
                                     -- not used in this core
-        clk_i:  in  std_logic;      -- wb : global bus clock
-          dat_i:  in std_logic_vector(15 downto 0 ); -- wb : 16 bits data bus
+        CLK_I:  in  std_logic;      -- WB : Global bus clock
+          DAT_I:  in std_logic_vector(15 downto 0 ); -- WB : 16 bits data bus       
                           -- input
-          dat_o:  out std_logic_vector(15 downto 0 ); -- wb : 16 bits data bus
+          DAT_O:  out std_logic_vector(15 downto 0 ); -- WB : 16 bits data bus
                           -- ouput
-         stb_i:  in  std_logic;      -- wb : access qualify from the master
-      cyc_i:  in  std_logic;      -- wb : access qualify
-         we_i:   in  std_logic;      -- wb : read/write request
+         STB_I:  in  std_logic;      -- WB : Access qualify from the master
+      CYC_I:  in  std_logic;      -- WB : Access qualify
+         WE_I:   in  std_logic;      -- WB : Read/write request
+      pulsador: in std_logic;
+      Switches: in std_logic_vector(3 downto 0)
       --
-      -- leds outputs
+      -- LEDS OUTPUTS
       --
-      leds: out std_logic_vector(7 downto 0)
+      --LEDS: out std_logic_vector(7 downto 0)
       );
 end wb_slave_interface_leds;
 
-architecture behavioral of wb_slave_interface_leds is
-
-signal en_reg: std_logic;
+architecture Behavioral of wb_slave_interface_leds is
+signal registro: std_logic_vector(15 downto 0);
+signal registro_m: std_logic_vector(15 downto 0);
+signal en_read: std_logic;
+signal en_write: std_logic;
 --
--- wishbone slave interface control state machine
+-- WISHBONE SLAVE INTERFACE CONTROL STATE MACHINE
 --
-type wb_state is (stb_in_wait, write_data, send_ack_o);
+type wb_state is (stb_in_wait, write_data, read_data, send_ack_o);
 signal act_wb : wb_state;
 signal next_wb: wb_state;
 
-begin
--- wishbone slave interface control
-ack_control: process (rst_i, clk_i)
+begin    
+-- WISHBONE SLAVE INTERFACE CONTROL
+ack_control: process (RST_I, CLK_I)
 -- declarations
 begin
-  if rst_i = '1' then
+  if RST_I = '1' then
     act_wb <= stb_in_wait;
-    elsif (clk_i'event and clk_i = '1') then
+    elsif (CLK_I'event and CLK_I = '1') then
     act_wb <= next_wb;
   end if;
 end process;
 
-process(act_wb,stb_i,cyc_i,we_i)
+process(act_wb,STB_I,CYC_I,WE_I)
 begin
     case act_wb is
       when stb_in_wait =>
-        -- wait for the stb form the master
-        if stb_i ='1' and cyc_i = '1' and we_i='1' then
+        -- Wait for the STB form the master
+        if STB_I ='1' and CYC_I = '1' and WE_I='0' and ADDR_I=addr then
+          next_wb <= read_data;
+         elsif STB_I ='1' and CYC_I = '1' and WE_I='1' and ADDR_I=addr then
           next_wb <= write_data;
-         else
+        else
           next_wb <= stb_in_wait;
         end if;
       when write_data =>
+          next_wb <= send_ack_o;  
+      when read_data =>
           next_wb <= send_ack_o;
         when send_ack_o =>
-        -- send the ack signal
-        -- it si possible to do it in write_data state
+        -- Send the ack signal
+        -- it si possible to do it in read_data state
         next_wb <= stb_in_wait;
       end case;
  end process;
 
 with act_wb select
-  ack_o <= '1' when send_ack_o,
+  ACK_O <= '1' when send_ack_o,
          '0' when others;
 
 with act_wb select
-  en_reg <= '1' when write_data,
-         '0' when others;
+  en_read <= '1' when read_data,
+         '0' when others;  
+
+with act_wb select
+  en_write <= '1' when write_data,
+         '0' when others;          
 --
--- registers synchronous load
+-- REGISTERS SYNCHRONOUS LOAD
 --
-process (clk_i, rst_i)
+process (CLK_I, RST_I)
 begin
-   if rst_i='1' then
-      leds <= (others => '0');
-   elsif clk_i'event and clk_i = '1' then
-    if en_reg='1' then
-      leds <= dat_i(7 downto 0);
+   if RST_I='1' then
+      registro <= (others => '0');
+   elsif CLK_I'event and CLK_I = '1' then
+    if en_write='1' then
+      registro <= DAT_I;
+    else
+      registro <= registro;
     end if;
   end if;
 end process;
 
-end behavioral;
+process (CLK_I, RST_I)
+begin
+   if RST_I='1' then
+      registro_m <= (others => '0');
+   elsif CLK_I'event and CLK_I = '1' then
+    if pulsador='1' then
+      registro_m <= DAT_I(3 downto 0)*Switches & "00000000";
+    else
+      registro_m <= registro_m;
+    end if;
+  end if;
+end process;
+
+process (CLK_I, RST_I)
+begin
+   if RST_I='1' then
+      DAT_O <= (others => '0');
+   elsif CLK_I'event and CLK_I = '1' then
+    if en_read='1' then
+      DAT_O <= registro_m;
+    end if;
+  end if;
+end process;
+
+end Behavioral;

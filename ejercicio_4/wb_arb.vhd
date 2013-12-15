@@ -10,16 +10,16 @@ use ieee.std_logic_arith.all;
 use ieee.std_logic_unsigned.all;
 
 entity wb_arb is
-generic (n_master : integer := 3);
+  generic (
+    n_master : integer := 3
+  );
   port (
-    --
     -- wishbone signals
-    --
-    rst_i:  in  std_logic;              -- wb : global reset signal
-    clk_i:  in  std_logic;              -- wb : global bus clock
-    cyc_i:  in  std_logic_vector(n_master-1 downto 0);   -- wb : master bus request
-    gnt_o:  out  std_logic_vector(n_master-1 downto 0);   -- wb : master bus access grant
-    cyc_shared_o : out  std_logic        -- wb : master bus request for the slaves
+    rst_i :in std_logic; -- wb : global reset signal
+    clk_i :in std_logic; -- wb : global bus clock
+    cyc_i :in std_logic_vector(n_master-1 downto 0); -- wb : master bus request
+    gnt_o :out std_logic_vector(n_master-1 downto 0); -- wb : master bus access grant
+    cyc_shared_o :out std_logic -- wb : master bus request for the slaves
   );
 end wb_arb;
 
@@ -105,7 +105,6 @@ begin
   -- Always the most prioritized one decoder
   in_sel <= (0=>'1', others=>'0') when cyc_i(0) = '1' else
             (1=>'1', others=>'0') when cyc_i(1) = '1' else
-            (2=>'1', others=>'0') when cyc_i(2) = '1' else
             (others=>'0');
 
 end behavioral;

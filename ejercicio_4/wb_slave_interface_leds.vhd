@@ -12,7 +12,7 @@ use ieee.std_logic_unsigned.all;
 
 entity wb_slave_interface_leds is
   generic (
-    slave_address :in std_logic_vector(15 downto 0)
+    address :in std_logic_vector(15 downto 0)
   );
   port (
     -- Leds output
@@ -30,6 +30,7 @@ entity wb_slave_interface_leds is
     ack_o :out std_logic; -- wb : ack from to the master
     -- Data
     dat_i :in std_logic_vector(15 downto 0); -- wb : 16 bits data bus input
+    dat_o :in std_logic_vector(15 downto 0) -- wb : 16 bits data bus output
   );
 end wb_slave_interface_leds;
 
@@ -58,7 +59,7 @@ begin
     case act_wb is
       when stb_in_wait =>
         -- wait for the stb form the master
-        if stb_i ='1' and cyc_i = '1' and we_i='1' and adr_i = slave_address then
+        if stb_i ='1' and cyc_i = '1' and we_i='1' and adr_i = address then
           next_wb <= write_data;
         else
           next_wb <= stb_in_wait;

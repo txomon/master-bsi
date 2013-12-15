@@ -13,15 +13,16 @@ use ieee.std_logic_unsigned.all;
 
 entity wb_master_interface_generator is
   generic (
-    count_module_factor : integer := 20 -- counter prescaler
-  );      
+    count_module_factor : integer := 20; -- counter prescaler
+    output_address : std_logic_vector(15 downto 0)
+  );
   port (
     -- wishbone signals
     -- global
     rst_i :in std_logic; -- wb : global reset signal
     clk_i :in std_logic; -- wb : global bus clock
     -- transaction control
-    adr_o :out std_logic_vector(15 downto 0 ); -- wb : address
+    adr_o :out std_logic_vector(15 downto 0 ) := output_address; -- wb : address
     cyc_o :out std_logic; -- wb : bus request to the arbitrer
     gnt_i :in std_logic; -- wb : bus grant from the arbitrer
     stb_o :out std_logic; -- wb : access qualify
@@ -44,9 +45,8 @@ architecture struct of wb_master_interface_generator is
   signal count: integer range 0 to count_module; -- prescaler value for the count value
   signal temporal_register_ce : std_logic; -- clock enable for the temporal register
   signal init_transfer_node : std_logic; -- inits the transfer to the slave
-  signal data_in_node: std_logic_vector(15 downto 0);   -- internal data in
-  signal data_out_node: std_logic_vector(15 downto 0);  -- internal data out
-  -- makes easier architecture with more than one masters
+  signal data_out_node: std_logic_vector(15 downto 0); -- internal data out
+
   signal stb_o_out : std_logic;
   signal we_o_out : std_logic;
   signal ack_i_in : std_logic;
@@ -103,7 +103,7 @@ begin
 
   we_o_out <= '1';
 
-  -- temporal counter 
+  -- temporal counter
   process (clk_i, rst_i)
   begin
     if rst_i='1' then

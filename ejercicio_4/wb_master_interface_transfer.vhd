@@ -31,8 +31,8 @@ use ieee.std_logic_1164.all;
 
 entity wb_master_interface_transfer is
   generic (
-    read_slave :in std_logic_vector(15 downto 0); -- Address of the slave to read from
-    write_slave :in std_logic_vector(15 downto 0) -- Address of the slave to write to
+    input_address :in std_logic_vector(15 downto 0); -- Address of the slave to read from
+    output_address :in std_logic_vector(15 downto 0) -- Address of the slave to write to
   );
   port (
     active :in std_logic; -- Activation of the master for one complete flow
@@ -116,8 +116,8 @@ begin
   -- Control signals
   -- adr_o for selecting slave
   with sta select
-  adr_o <=  read_slave when read_ask_s | read_ack_s,
-            write_slave when write_ask_s | write_ack_s,
+  adr_o <=  input_address when read_ask_s | read_ack_s,
+            output_address when write_ask_s | write_ack_s,
             (others => '0') when others;
 
   -- we_o to write or read access

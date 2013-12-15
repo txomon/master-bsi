@@ -12,25 +12,26 @@ use ieee.std_logic_unsigned.all;
 
 entity wb_slave_interface_processor is
   generic(
-    addr: std_logic_vector(3 downto 0) := "0001"
+    address: std_logic_vector(15 downto 0)
   );
   port (
-    -- wishbone signals
-    addr_i: in std_logic_vector (3 downto 0);
-    rst_i:  in  std_logic;      -- wb : global reset signal
-    ack_o:  out std_logic;      -- wb : ack from to the master
-    --adr_i:  in  std_logic_vector(15 downto 0 );-- wb : adress,
-    -- not used in this core
-    clk_i:  in  std_logic;      -- wb : global bus clock
-    dat_i:  in std_logic_vector(15 downto 0 ); -- wb : 16 bits data bus
-    -- input
-    dat_o:  out std_logic_vector(15 downto 0 ); -- wb : 16 bits data bus
-    -- ouput
-    stb_i:  in  std_logic;      -- wb : access qualify from the master
-    cyc_i:  in  std_logic;      -- wb : access qualify
-    we_i:   in  std_logic;      -- wb : read/write request
+    -- Inputs
     pulsador: in std_logic;
-    switches: in std_logic_vector(3 downto 0)
+    switches: in std_logic_vector(3 downto 0);
+
+    -- Wishbone signals
+    -- Global
+    rst_i :in std_logic; -- wb : global reset signal
+    clk_i :in std_logic; -- wb : global bus clock
+    -- Control
+    stb_i :in std_logic; -- wb : access qualify from the master
+    cyc_i :in std_logic; -- wb : access qualify
+    we_i :in std_logic; -- wb : read/write request
+    adr_i :in std_logic_vector(15 downto 0); -- wb : adress,
+    ack_o :out std_logic; -- wb : ack to the master
+    -- input
+    dat_i :in std_logic_vector(15 downto 0); -- wb : 16 bits data bus
+    dat_o :out std_logic_vector(15 downto 0) -- wb : 16 bits data bus
   );
 end wb_slave_interface_processor;
 
@@ -63,9 +64,9 @@ begin
     case act_wb is
       when stb_in_wait =>
         -- wait for the stb form the master
-        if stb_i ='1' and cyc_i = '1' and we_i='0' and addr_i=addr then
+        if stb_i ='1' and cyc_i = '1' and we_i='0' and adr_i=address then
           next_wb <= read_data;
-        elsif stb_i ='1' and cyc_i = '1' and we_i='1' and addr_i=addr then
+        elsif stb_i ='1' and cyc_i = '1' and we_i='1' and adr_i=address then
           next_wb <= write_data;
         else
           next_wb <= stb_in_wait;

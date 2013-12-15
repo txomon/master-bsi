@@ -12,22 +12,29 @@ use ieee.std_logic_unsigned.all;
 
 entity wb_intercon_sh_bus is
   port (
-    pin_reset:  in  std_logic;    -- external reset signal
-    pin_clock_50:  in  std_logic;    -- external clock signal
-    -- leds outputs
-    pin_leds:  out  std_logic_vector(7 downto 0);
-    alarm : in std_logic --Alarm clock
+    pin_reset :in std_logic; -- external reset signal
+    pin_clock_50 :in std_logic; -- external clock signal
+    pin_leds :out std_logic_vector(7 downto 0); -- leds outputs
+    m1trigger :in std_logic; -- trigger buttons for master 1
+    data : in std_logic_vector(3 downto 0); -- Data to have as a reference
+    m2trigger :in std_logic; -- trigger
+    s1trigger :in std_logic -- trigger for slave processing
   );
 end wb_intercon_sh_bus;
 
 architecture struct of wb_intercon_sh_bus is
 
   -- number of masters
-  constant n_master:integer := 2; -- number of masters
+  constant n_master :integer := 2; -- number of masters
+  constant n_slave :integer := 2; -- number of slaves
+  -- Address designation
+  constant processor_address :std_logic_vector(15 downto 0) := "0000000000000000"; -- Processor's address
+  constant leds_address :std_logic_vector(15 downto 0) := "0000000000000001"; -- Led output address
 
-  entity wb_master_interface_generator is
+  component wb_master_interface_generator is
     generic (
-      count_module_factor : integer := 20 -- counter prescaler
+      count_module_factor :in integer := 20; -- counter prescaler
+      output_address :in std_logic_vector(15 downto 0)
     );
     port (
       -- wishbone signals
@@ -51,7 +58,7 @@ architecture struct of wb_intercon_sh_bus is
 
   component wb_slave_interface_processor is
     generic(
-      addr: std_logic_vector(3 downto 0) := "0001"
+      address: std_logic_vector(15 downto 0)
     );
     port (
       -- wishbone signals
@@ -75,8 +82,8 @@ architecture struct of wb_intercon_sh_bus is
 
   component wb_master_interface_transfer is
     generic (
-      read_slave :in std_logic_vector(15 downto 0); -- Address of the slave to read from
-      write_slave :in std_logic_vector(15 downto 0) -- Address of the slave to write to
+      input_address :in std_logic_vector(15 downto 0); -- Address of the slave to read from
+      output_address :in std_logic_vector(15 downto 0) -- Address of the slave to write to
     );
     port (
       active :in std_logic; -- Activation of the master for one complete flow
@@ -101,7 +108,7 @@ architecture struct of wb_intercon_sh_bus is
 
   component wb_slave_interface_leds is
     generic (
-      slave_address :in std_logic_vector(15 downto 0)
+      address :in std_logic_vector(15 downto 0)
     );
     port (
       -- Leds output
@@ -118,7 +125,8 @@ architecture struct of wb_intercon_sh_bus is
       we_i :in  std_logic; -- wb : read/write request
       ack_o :out std_logic; -- wb : ack from to the master
       -- Data
-      dat_i :in std_logic_vector(15 downto 0); -- wb : 16 bits data bus input
+      dat_i :in std_logic_vector(15 downto 0);      -- wb : 16 bits data bus input
+      dat_o :in std_logic_vector(15 downto 0) -- wb : 16 bits data bus output
     );
   end component;
 
@@ -135,77 +143,115 @@ architecture struct of wb_intercon_sh_bus is
     );
   end component;
 
-  type output_data_bus is array (n_master-1 downto 0) of std_logic_vector(15 downto 0);
+  type master_bus is array (n_master-1 downto 0) of std_logic_vector(15 downto 0);
+  type slave_bus is array (n_slave-1 downto 0) of std_logic_vector(15 downto 0);
 
-  -- wishbone interconnection signals
+  -- Wishbone interconnection signals
+  -- Global
   signal rst_i : std_logic;
   signal clk_i : std_logic;
-  signal ack   : std_logic;
-  signal ack_master: std_logic_vector(n_master-1 downto 0);
-  signal we_out   : std_logic;
-  signal stb_out  : std_logic;
-  signal adr_out  : std_logic;
-  signal we   : std_logic_vector(n_master-1 downto 0);
-  signal stb  : std_logic_vector(n_master-1 downto 0);
-  signal dat_slave: std_logic_vector(15 downto 0);
-  signal dat_master: std_logic_vector(15 downto 0);
-  signal dat_out : output_data_bus;
+  -- Control signals from slaves
+  signal ack_slave : std_logic_vector(1 downto 0); -- Ack from slaves to multiplexor
+  signal ack : std_logic; -- Ack from mult to master
+  -- Control signals from masters
+  signal we_o : std_logic_vector(n_master-1 downto 0); -- all we_o masters
+  signal we : std_logic; -- we_o from masters
+  signal stb_o : std_logic_vector(n_master-1 downto 0); -- all stb_o master
+  signal stb : std_logic; -- stb_o from masters
+  signal adr_o : master_bus; -- all adr_o masters
+  signal adr : std_logic_vector(15 downto 0); -- adr_o from masters
+  signal dat_s_o : slave_bus; -- all dat_o slaves
+  signal dat_s : std_logic_vector(15 downto 0); -- dat_o from slave
+  signal dat_m_o : master_bus; -- all dat_o masters
+  signal dat_m : std_logic_vector(15 downto 0);
   signal cyc : std_logic_vector(n_master-1 downto 0);
   signal gnt : std_logic_vector(n_master-1 downto 0);
-  signal cyc_shared: std_logic;
+  signal cyc_shared : std_logic;
 
 begin
 
   -- Generator of the different data, only connects to one slave
-  wb_master_interface_generator
+  generator : wb_master_interface_generator
     generic map (
-      count_module_factor => 20*(i+1) -- display timer prescaler
+      count_module_factor => 20, -- display timer prescaler
+      output_address => processor_address -- Address of the processor slave
     )
     port map (
+      switches => data,
+      pulsador => m1trigger,
+      -- wishbone signals
+      -- global
       rst_i => rst_i,
-      ack_i => ack_master(i),
-      --adr_o => adr(i),
       clk_i => clk_i,
-      dat_i => dat_slave,
-      dat_o => dat_out(i),
-      stb_o => stb(i),
-      we_o => we(i),
-      cyc_o => cyc(i),
-      gnt_i => gnt(i)
+      -- transaction control
+      adr_o => adr_o(0),
+      cyc_o => cyc(0),
+      gnt_i => gnt(0),
+      stb_o => stb_o(0),
+      we_o => we_o(0),
+      ack_i => ack,
+      -- data
+      dat_o => dat_m_o(0)
     );
 
-  wb_master_interface_transfer
-    port map (
-      active => active,
+  -- Processor slave, between both masters
+  processor: wb_slave_interface_processor
+    generic map (
+      address => processor_address
+    )
+    port map(
+      pulsador => s1trigger,
+      switches => data,
       rst_i => rst_i,
-      ack_i => ack_master(i),
-      adr_o => adr(i),
       clk_i => clk_i,
-      dat_i => dat_slave,
-      dat_o => dat_out(i),
-      stb_o => stb(i),
-      we_o => we(i),
-      cyc_o => cyc(i),
-      gnt_i => gnt(i)
+      stb_i => stb,
+      cyc_i => cyc_shared,
+      we_i => we,
+      adr_i => adr,
+      ack_o => ack_slave(0),
+      dat_i => dat_m,
+      dat_o => dat_s_o(0)
+    );
+
+  transfer : wb_master_interface_transfer
+    generic map (
+      input_address => processor_address,
+      output_address => leds_address
+    )
+    port map (
+      active => m2trigger,
+      rst_i => rst_i,
+      clk_i => clk_i,
+      cyc_o => cyc(1),
+      adr_o => adr_o(1),
+      gnt_i => gnt(1),
+      stb_o => stb_o(1),
+      we_o => we_o(1),
+      ack_i => ack,
+      dat_i => dat_s,
+      dat_o => dat_m_o(1)
     );
 
   -- wishbone slave core (leds)
-  wb_slave_interface_leds
+  output : wb_slave_interface_leds
+    generic map(
+      address => leds_address
+    )
     port map(
       rst_i => rst_i,
-      ack_o => ack,
-      --adr_i => adr,
+      ack_o => ack_slave(1),
+      adr_i => adr,
       clk_i => clk_i,
-      dat_i => dat_master,
-      dat_o => dat_slave,
-      stb_i => stb_out,
+      dat_i => dat_m,
+      dat_o => dat_s_o(1),
+      stb_i => stb,
       cyc_i => cyc_shared,
-      we_i => we_out,
+      we_i => we,
       leds => pin_leds
     );
 
   -- wishbone bus arbitrer
-  wb_arb
+  arbiter : wb_arb
     generic map (
       n_master
     )
@@ -222,32 +268,38 @@ begin
   process(gnt,stb)
   begin
     case gnt is
-      when "01" => stb_out <= stb(0);
-      when "10" => stb_out <= stb(1);
-      when others => stb_out <= '0';
+      when "01" => stb <= stb_o(0);
+      when "10" => stb <= stb_o(1);
+      when others => stb <= '0';
     end case;
   end process;
 
-  process(gnt,we)
+  process(gnt,we_o)
   begin
     case gnt is
-      when "01" => we_out <= we(0);
-      when "10" => we_out <= we(1);
-      when others => we_out <= '0';
+      when "01" => we <= we_o(0);
+      when "10" => we <= we_o(1);
+      when others => we <= '0';
     end case;
   end process;
 
-  process(gnt,dat_out)
+  process(gnt,dat_m_o)
   begin
     case gnt is
-      when "01" => dat_master <= dat_out(0);
-      when "10" => dat_master <= dat_out(1);
-      when others => dat_master <= (others=>'0');
+      when "01" => dat_m <= dat_m_o(0);
+      when "10" => dat_m <= dat_m_o(1);
+      when others => dat_m <= (others=>'0');
     end case;
   end process;
 
-  ack_master(0) <= ack and gnt(0);
-  ack_master(1) <= ack and gnt(1);
+  process(gnt,adr_o) --direccion a los esclavos
+  begin
+    case gnt is
+      when "01" => adr <= adr_o(0);
+      when "10" => adr <= adr_o(1);
+      when others => adr <= (others=>'0');
+    end case;
+  end process;
 
   rst_i <= pin_reset;
   clk_i <= pin_clock_50;

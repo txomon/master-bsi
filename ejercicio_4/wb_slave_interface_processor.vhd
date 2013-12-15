@@ -32,9 +32,9 @@ entity wb_slave_interface_processor is
     pulsador: in std_logic;
     switches: in std_logic_vector(3 downto 0)
   );
-end wb_slave_interface_leds;
+end wb_slave_interface_processor;
 
-architecture behavioral of wb_slave_interface_leds is
+architecture behavioral of wb_slave_interface_processor is
   signal registro: std_logic_vector(15 downto 0);
   signal registro_m: std_logic_vector(15 downto 0);
   signal en_read: std_logic;

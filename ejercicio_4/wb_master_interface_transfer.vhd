@@ -35,22 +35,21 @@ entity wb_master_interface_transfer is
     write_slave :in std_logic_vector(15 downto 0) -- Address of the slave to write to
   );
   port (
-    active :in std_logic; -- Activation of the master
-    --
+    active :in std_logic; -- Activation of the master for one complete flow
     -- wishbone signals
-    --
+    -- Global signals
     rst_i :in std_logic; -- wb : global reset signal
-    ack_i :in std_logic; -- wb : ack from the slave
-    adr_o :out std_logic_vector(15 downto 0 ); -- wb : adresss
     clk_i :in std_logic; -- wb : global bus clock
-    dat_i :in std_logic_vector(15 downto 0 ); -- wb : 16 bits
-                                              -- data bus input
-    dat_o :out std_logic_vector(15 downto 0 ); -- wb : 16 bits
-                                              -- data bus output
+    -- Control signals
+    cyc_o :out std_logic; -- wb : bus request to the arbitrer
+    adr_o :out std_logic_vector(15 downto 0); -- wb : address
+    gnt_i :in std_logic; -- wb : bus grant from the arbitrer
     stb_o :out std_logic; -- wb : access qualify
     we_o :out std_logic; -- wb : read/write request
-    cyc_o :out std_logic; -- wb : bus request to the arbitrer
-    gnt_i :in std_logic -- wb : bus grant from the arbitrer
+    ack_i :in std_logic; -- wb : ack from the slave
+    -- Data signals
+    dat_i :in std_logic_vector(15 downto 0); -- wb : 16 bits data bus input
+    dat_o :out std_logic_vector(15 downto 0) -- wb : 16 bits data bus output
   );
 end wb_master_interface_transfer;
 

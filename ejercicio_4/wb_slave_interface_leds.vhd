@@ -11,26 +11,25 @@ use ieee.std_logic_arith.all;
 use ieee.std_logic_unsigned.all;
 
 entity wb_slave_interface_leds is
+  generic (
+    slave_address :in std_logic_vector(15 downto 0)
+  );
   port (
-    --
-    -- wishbone signals
-    --
-    rst_i:  in  std_logic;      -- wb : global reset signal
-    ack_o:  out std_logic;      -- wb : ack from to the master
-    --adr_i:  in  std_logic_vector(15 downto 0 );-- wb : adress,
-    -- not used in this core
-    clk_i:  in  std_logic;      -- wb : global bus clock
-    dat_i:  in std_logic_vector(15 downto 0 ); -- wb : 16 bits data bus
-    -- input
-    dat_o:  out std_logic_vector(15 downto 0 ); -- wb : 16 bits data bus
-    -- ouput
-    stb_i:  in  std_logic;      -- wb : access qualify from the master
-    cyc_i:  in  std_logic;      -- wb : access qualify
-    we_i:   in  std_logic;      -- wb : read/write request
-    --
-    -- leds outputs
-    --
-    leds: out std_logic_vector(7 downto 0)
+    -- Leds output
+    leds :out std_logic_vector(7 downto 0);
+
+    --- Wishbone signals
+    -- Global
+    rst_i :in  std_logic; -- wb : global reset signal
+    clk_i :in  std_logic; -- wb : global bus clock
+    -- Control
+    stb_i :in  std_logic; -- wb : access qualify from the master
+    cyc_i :in  std_logic; -- wb : access qualify
+    adr_i :in  std_logic_vector(15 downto 0); -- wb : adress,
+    we_i :in  std_logic; -- wb : read/write request
+    ack_o :out std_logic; -- wb : ack from to the master
+    -- Data
+    dat_i :in std_logic_vector(15 downto 0); -- wb : 16 bits data bus input
   );
 end wb_slave_interface_leds;
 
@@ -40,8 +39,7 @@ architecture behavioral of wb_slave_interface_leds is
   -- wishbone slave interface control state machine
   --
   type wb_state is (stb_in_wait, write_data, send_ack_o);
-  signal act_wb : wb_state;
-  signal next_wb: wb_state;
+  signal act_wb, next_wb : wb_state;
 begin
 
   -- wishbone slave interface control
@@ -60,7 +58,7 @@ begin
     case act_wb is
       when stb_in_wait =>
         -- wait for the stb form the master
-        if stb_i ='1' and cyc_i = '1' and we_i='1' then
+        if stb_i ='1' and cyc_i = '1' and we_i='1' and adr_i = slave_address then
           next_wb <= write_data;
         else
           next_wb <= stb_in_wait;

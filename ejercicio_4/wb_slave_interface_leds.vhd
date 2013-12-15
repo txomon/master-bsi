@@ -14,19 +14,19 @@ library WORK;
 
 entity wb_slave_interface_leds is
    generic(
-      addr: std_logic_vector(3 downto 0):="0001");  
+      addr: std_logic_vector(3 downto 0):="0001");
     Port (
        --
       -- WISHBONE SIGNALS
       --
       ADDR_I: in std_logic_vector (3 downto 0);
-      
+
       RST_I:  in  std_logic;      -- WB : Global RESET signal
        ACK_O:  out std_logic;      -- WB : Ack from to the master
       --ADR_I:  in  std_logic_vector(15 downto 0 );-- WB : Adress,
                                     -- not used in this core
         CLK_I:  in  std_logic;      -- WB : Global bus clock
-          DAT_I:  in std_logic_vector(15 downto 0 ); -- WB : 16 bits data bus       
+          DAT_I:  in std_logic_vector(15 downto 0 ); -- WB : 16 bits data bus
                           -- input
           DAT_O:  out std_logic_vector(15 downto 0 ); -- WB : 16 bits data bus
                           -- ouput
@@ -54,7 +54,7 @@ type wb_state is (stb_in_wait, write_data, read_data, send_ack_o);
 signal act_wb : wb_state;
 signal next_wb: wb_state;
 
-begin    
+begin
 -- WISHBONE SLAVE INTERFACE CONTROL
 ack_control: process (RST_I, CLK_I)
 -- declarations
@@ -79,7 +79,7 @@ begin
           next_wb <= stb_in_wait;
         end if;
       when write_data =>
-          next_wb <= send_ack_o;  
+          next_wb <= send_ack_o;
       when read_data =>
           next_wb <= send_ack_o;
         when send_ack_o =>
@@ -95,11 +95,11 @@ with act_wb select
 
 with act_wb select
   en_read <= '1' when read_data,
-         '0' when others;  
+         '0' when others;
 
 with act_wb select
   en_write <= '1' when write_data,
-         '0' when others;          
+         '0' when others;
 --
 -- REGISTERS SYNCHRONOUS LOAD
 --

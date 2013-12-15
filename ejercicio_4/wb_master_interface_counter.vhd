@@ -56,9 +56,9 @@ signal DATA_IN_NODE: std_logic_vector(15 downto 0);   -- INTERNAL DATA IN
 signal DATA_OUT_NODE: std_logic_vector(15 downto 0);  -- INTERNAL DATA OUT
                                     -- (Removed by synthesis)
 -- makes easier architecture with more than one masters
-signal STB_O_OUT : std_logic;              
-signal WE_O_OUT : std_logic;              
-signal ACK_I_IN : std_logic;              
+signal STB_O_OUT : std_logic;
+signal WE_O_OUT : std_logic;
+signal ACK_I_IN : std_logic;
 
 --
 -- WISHBONE MASTER INTERFACE CONTROL STATE MACHINE
@@ -127,7 +127,7 @@ with act_wb select
 
   WE_O_OUT <= '1';
 
-  
+
 --
 -- TEMPORAL COUNTER PRESCALER
 --

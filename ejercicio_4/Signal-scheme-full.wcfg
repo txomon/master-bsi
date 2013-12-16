@@ -12,7 +12,7 @@
          </top_modules>
       </db_ref>
    </db_ref_list>
-   <WVObjectSize size="52" />
+   <WVObjectSize size="53" />
    <wvobject fp_name="/simple_testbench/pin_reset" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">pin_reset</obj_property>
       <obj_property name="ObjectShortName">pin_reset</obj_property>
@@ -48,6 +48,10 @@
    <wvobject fp_name="/simple_testbench/uut/dat_s_o" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">dat_s_o[1:0]</obj_property>
       <obj_property name="ObjectShortName">dat_s_o[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/simple_testbench/uut/dat_m_o" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">dat_m_o[1:0]</obj_property>
+      <obj_property name="ObjectShortName">dat_m_o[1:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/simple_testbench/uut/gnt" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">gnt[1:0]</obj_property>

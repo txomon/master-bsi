@@ -54,7 +54,7 @@ begin
     end if;
   end process;
 
-  process(act_wb,stb_i,cyc_i,we_i)
+  process(act_wb, stb_i, cyc_i, we_i, adr_i)
   begin
     case act_wb is
       when stb_in_wait =>

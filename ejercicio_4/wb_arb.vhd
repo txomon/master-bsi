@@ -36,7 +36,7 @@ begin
   --
   -- State machine
 
-  process(sta, cyc, gnt)
+  process(sta, cyc, gnt, sel_sta)
   begin
     case(sta) is
     when grant_master =>

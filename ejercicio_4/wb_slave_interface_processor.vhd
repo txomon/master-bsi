@@ -108,7 +108,7 @@ begin
     end if;
   end process;
 
-  process (clk_i, rst_i)
+  process (pulsador, switches, registro, rst_i)
   begin
     if rst_i='1' then
       registro_m <= (others => '0');

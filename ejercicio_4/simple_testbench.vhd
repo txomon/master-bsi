@@ -92,15 +92,31 @@ begin
 
    -- stimulus process
    stim_proc: process
-   begin    
+   begin
       -- hold reset state for 100 ns.
-      wait for 100 ns;  
+      wait for 100 ns;
 
       wait for pin_clock_50_period*50;
 
       -- insert stimulus here
+      data <= "0101";
+      m1trigger <= '1';
+      s1trigger <= '0';
 
+      wait for pin_clock_50_period*1000;
 
+      data <= "0010";
+      m1trigger <= '0';
+      s1trigger <= '1';
+
+      wait for pin_clock_50_period*1000;
+
+      s1trigger <= '0';
+      m2trigger <= '1';
+
+      wait for pin_clock_50_period*10;
+
+      m2trigger <= '0';
       wait;
    end process;
 

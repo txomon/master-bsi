@@ -265,7 +265,7 @@ begin
     );
 
   -- multiplexors for wishbone bus signals
-  process(gnt,stb)
+  process(gnt,stb_o)
   begin
     case gnt is
       when "01" => stb <= stb_o(0);
@@ -292,6 +292,15 @@ begin
     end case;
   end process;
 
+  process(adr,dat_s_o)
+  begin
+    case adr is
+      when processor_address => dat_s <= dat_s_o(0);
+      when leds_address => dat_s <= dat_s_o(1);
+      when others => dat_s <= (others=>'0');
+    end case;
+  end process;
+
   process(gnt,adr_o) --direccion a los esclavos
   begin
     case gnt is
@@ -303,5 +312,6 @@ begin
 
   rst_i <= pin_reset;
   clk_i <= pin_clock_50;
+  ack <= ack_slave(0) or ack_slave(1);
 
 end struct;

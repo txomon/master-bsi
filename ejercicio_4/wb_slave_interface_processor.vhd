@@ -108,11 +108,9 @@ begin
     end if;
   end process;
 
-  process (pulsador, switches, registro, rst_i)
+  process (clk_i)
   begin
-    if rst_i='1' then
-      registro_m <= (others => '0');
-    else
+    if rising_edge(clk_i) then
       if pulsador='1' then
         registro_m <= X"00" & (registro(3 downto 0) * switches);
       end if;
@@ -121,9 +119,7 @@ begin
 
   process (clk_i, rst_i)
   begin
-     if rst_i='1' then
-        dat_o <= (others => '0');
-     elsif rising_edge(clk_i) then
+    if rising_edge(clk_i) then
       if act_wb = read_data then
         dat_o <= registro_m;
       end if;

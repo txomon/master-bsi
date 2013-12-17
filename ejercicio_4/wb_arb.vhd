@@ -11,7 +11,7 @@ use ieee.std_logic_unsigned.all;
 
 entity wb_arb is
   generic (
-    n_master : integer := 3
+    n_master : integer := 2
   );
   port (
     -- wishbone signals
@@ -30,13 +30,13 @@ architecture behavioral of wb_arb is
   signal sta, stn : arb_state;
 
   -- Internal signals to use with decoders
-  signal cyc, gnt : std_logic;
+  signal cyc : std_logic;
   signal sel, in_sel, sel_sta : std_logic_vector(n_master-1 downto 0);
 begin
   --
   -- State machine
 
-  process(sta, cyc, gnt, sel_sta)
+  process(sta, cyc, sel_sta)
   begin
     case(sta) is
     when grant_master =>
@@ -71,24 +71,8 @@ begin
 
   -- Generate control signal for states, gnt and cyc
 
-  gnt <= '0' when in_sel = conv_std_logic_vector(0, n_master-1) else
-         '1';
-
   cyc <= '0' when in_sel = conv_std_logic_vector(0, n_master-1) else
          '1';
---  process(sel)
---  begin
---    -- If the selection is none, no priority
---    if sel = conv_std_logic_vector(0, n_master-1) then
---      gnt <= '0';
---      cyc <= '0';
---    -- If there is priority
---    else
---      cyc <= '1';
---      gnt <= '1';
---    end if;
---  end process;
-
 
   -- Selection must be maintained within the state
   process(clk_i)

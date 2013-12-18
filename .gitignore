@@ -14,7 +14,6 @@ transcript
 *.gise
 *.html
 *.cfg
-*.cmd
 *.xmsgs
 *.prj
 iseconfig
@@ -74,3 +73,17 @@ XpsGuiSessionLock
 *.xreport
 *.lst
 simgen.opt
+*.stackdump
+system_routed
+*.ipf
+impact.xsl
+*.mhs
+executable.elf
+xmd_processor.opt
+_impact.cmd
+hdl/
+*.scr
+*.srp
+processor/
+implementation/
+synthesis/

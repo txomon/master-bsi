@@ -49,6 +49,7 @@ BEGIN microblaze
  BUS_INTERFACE DEBUG = mdm_0_MBDEBUG_0
  PORT MB_RESET = reset_mb
  PORT INTERRUPT = debugger_Interrupt
+ PORT MB_Halted = processor_MB_Halted_to_chipscope_ila_0
 END
 
 BEGIN lmb_v10
@@ -136,10 +137,13 @@ BEGIN chipscope_ila
  PARAMETER C_TRIG0_UNITS = 1
  PARAMETER C_TRIG0_TRIGGER_IN_WIDTH = 13
  PARAMETER C_NUM_DATA_SAMPLES = 1024
+ PARAMETER C_TRIG1_UNITS = 1
+ PARAMETER C_TRIG1_TRIGGER_IN_WIDTH = 1
  PORT chipscope_ila_control = chipscope_ila_0_icon_control
  PORT TRIG0 = leds_8_GPIO & switch_4_GPIO & card_clock
  PORT CLK = sys_clock
  PORT TRIG_OUT = chipscope_int
+ PORT TRIG1 = processor_MB_Halted_to_chipscope_ila_0
 END
 
 BEGIN chipscope_icon

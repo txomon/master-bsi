@@ -12,7 +12,6 @@ int main ()
 	while(1)
 	{
 		*leds = *switches + 1;
-		print("%d => %d", *switches, *leds);
 		for (waiting = 0 ; waiting < WAIT_TIME;){
 			waiting++;
 		}

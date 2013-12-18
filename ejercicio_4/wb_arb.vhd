@@ -28,10 +28,10 @@ architecture behavioral of wb_arb is
   -- Sta = Active status ; Stn = Next status
   type arb_state is (s_wait, s_g1, s_g2);
   signal sta, stn : arb_state;
-  
+
   type priorities is (none, g1, g2);
   signal pri : priorities;
-  
+
 
   -- Internal signals to use with decoders
   signal sel, status, prior : std_logic_vector(n_master-1 downto 0);

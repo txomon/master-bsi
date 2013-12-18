@@ -87,3 +87,6 @@ hdl/
 processor/
 implementation/
 synthesis/
+fuseRelaunch.cmd
+isim.cmd
+.dswkshop/

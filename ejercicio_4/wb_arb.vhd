@@ -26,69 +26,68 @@ end wb_arb;
 
 architecture behavioral of wb_arb is
   -- Sta = Active status ; Stn = Next status
-  type arb_state is (grant_master, wait_master);
+  type arb_state is (s_wait, s_g1, s_g2);
   signal sta, stn : arb_state;
+  
+  type priorities is (none, g1, g2);
+  signal pri : priorities;
+  
 
   -- Internal signals to use with decoders
+  signal sel, status, prior : std_logic_vector(n_master-1 downto 0);
   signal cyc : std_logic;
-  signal sel, in_sel, sel_sta : std_logic_vector(n_master-1 downto 0);
 begin
-  --
-  -- State machine
 
-  process(sta, cyc, sel_sta)
+  process(clk_i)
+  begin
+    if rising_edge(clk_i) then
+      if rst_i = '1' then
+        sta <= s_wait;
+      else
+        sta <= stn;
+      end if;
+    end if;
+  end process;
+
+
+  process(sta,cyc)
   begin
     case(sta) is
-    when grant_master =>
-      if sel_sta = conv_std_logic_vector(0, n_master-1) then
-        stn <= grant_master;
+    when s_wait =>
+      if pri = g1 then
+        stn <= s_g1;
+      elsif pri = g2 then
+        stn <= s_g2;
       else
-        stn <= wait_master;
+        stn <= s_wait;
       end if;
-    when wait_master =>
-      if sel_sta = conv_std_logic_vector(0, n_master-1) then
-        stn <= grant_master;
+    when s_g1 =>
+      if cyc_i(0) = '1' then
+        stn <= s_g1;
       else
-        stn <= wait_master;
+        stn <= s_wait;
+      end if;
+    when s_g2 =>
+      if cyc_i(1) = '1' then
+        stn <= s_g2;
+      else
+        stn <= s_wait;
       end if;
     end case;
   end process;
 
-  process(clk_i,rst_i)
-  begin
-    if rst_i = '1' then
-      sta <= grant_master;
-    elsif rising_edge(clk_i) then
-      sta <= stn;
-    end if;
-  end process;
+  pri <=  g1 when cyc_i(0)='1' else
+          g2 when cyc_i(1)='1' else
+          none;
 
-  cyc_shared_o <= '1' when cyc ='1' else
-                  '0';
-  -- Control signals
-  sel_sta <= sel and cyc_i;
-  gnt_o <= sel_sta;
+  with sta select
+  cyc_shared_o <= '1' when s_g1 | s_g2,
+                  '0' when others;
 
-  -- Generate control signal for states, gnt and cyc
+  with sta select
+  gnt_o <=  "01" when s_g1,
+            "10" when s_g2,
+            (others=>'0') when others;
 
-  cyc <= '0' when in_sel = conv_std_logic_vector(0, n_master-1) else
-         '1';
-
-  -- Selection must be maintained within the state
-  process(clk_i)
-  begin
-    if rising_edge(clk_i) then
-      if sta = grant_master then
-        sel <= in_sel;
-      elsif stn = grant_master then
-        sel <= in_sel;
-      end if;
-    end if;
-  end process;
-
-  -- Always the most prioritized one decoder
-  in_sel <= (0=>'1', others=>'0') when cyc_i(0) = '1' else
-            (1=>'1', others=>'0') when cyc_i(1) = '1' else
-            (others=>'0');
 
 end behavioral;

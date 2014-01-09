@@ -1,9 +1,9 @@
 #Please do not modify this file by hand
-XmpVersion: 12.3
-VerMgmt: 12.3
+XmpVersion: 14.1
+VerMgmt: 14.1
 IntStyle: default
+Flow: ise
 MHS File: system.mhs
-MSS File: system.mss
 Architecture: spartan3e
 Device: xc3s500e
 Package: fg320
@@ -19,27 +19,10 @@ InsertNoPads: 0
 WarnForEAArch: 1
 HdlLang: VHDL
 SimModel: BEHAVIORAL
+ExternalMemSim: 0
 UcfFile: data/system.ucf
 EnableParTimingError: 1
 ShowLicenseDialog: 1
-Processor: processor
-BootLoop: 0
-XmdStub: 0
-SwProj: program
-Processor: processor
-Executable: program/executable.elf
-Source: program/main.c
-DefaultInit: executable
-InitBram: 1
-Active: 1
-CompilerOptLevel: 2
-GlobPtrOpt: 0
-DebugSym: 1
-ProfileFlag: 0
-ProgStart: 
-StackSize: 
-HeapSize: 
-LinkerScript: 
-ProgCCFlags: 
-CompileInXps: 1
-NonXpsApp: 0
+Processor: microblaze_0
+ElfImp: 
+ElfSim: 

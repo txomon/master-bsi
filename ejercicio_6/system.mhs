@@ -30,11 +30,14 @@ BEGIN microblaze
  PARAMETER C_USE_BARREL = 1
  PARAMETER C_DEBUG_ENABLED = 1
  PARAMETER HW_VER = 8.30.a
+ PARAMETER C_FSL_LINKS = 1
  BUS_INTERFACE DLMB = dlmb
  BUS_INTERFACE ILMB = ilmb
  BUS_INTERFACE DPLB = mb_plb
  BUS_INTERFACE IPLB = mb_plb
  BUS_INTERFACE DEBUG = microblaze_0_mdm_bus
+ BUS_INTERFACE SFSL0 = simple_logic_0_to_microblaze_0
+ BUS_INTERFACE MFSL0 = microblaze_0_to_simple_logic_0
  PORT MB_RESET = mb_reset
 END
 
@@ -178,7 +181,26 @@ BEGIN proc_sys_reset
 END
 
 BEGIN fsl_v20
- PARAMETER INSTANCE = fsl_v20_0
+ PARAMETER INSTANCE = simple_logic_0_to_microblaze_0
  PARAMETER HW_VER = 2.11.e
+ PARAMETER C_EXT_RESET_HIGH = 1
+ PORT FSL_Clk = clk_50_0000MHz
+ PORT SYS_Rst = sys_bus_reset
+END
+
+BEGIN simple_logic
+ PARAMETER INSTANCE = simple_logic_0
+ PARAMETER HW_VER = 1.00.a
+ BUS_INTERFACE MFSL = simple_logic_0_to_microblaze_0
+ BUS_INTERFACE SFSL = microblaze_0_to_simple_logic_0
+ PORT FSL_Clk = clk_50_0000MHz
+END
+
+BEGIN fsl_v20
+ PARAMETER INSTANCE = microblaze_0_to_simple_logic_0
+ PARAMETER HW_VER = 2.11.e
+ PARAMETER C_EXT_RESET_HIGH = 1
+ PORT FSL_Clk = clk_50_0000MHz
+ PORT SYS_Rst = sys_bus_reset
 END
 

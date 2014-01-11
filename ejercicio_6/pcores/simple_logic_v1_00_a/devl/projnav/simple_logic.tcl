@@ -1,0 +1,10 @@
+project new /home/javier/proyectos/master/master-bsi/ejercicio_6/pcores/simple_logic_v1_00_a/devl/projnav/simple_logic.xise;
+project set family spartan3e;
+project set device xc3s500e;
+project set package fg320;
+project set speed -4;
+project set top_level_module_type HDL;
+project set synthesis_tool "XST (VHDL/Verilog)";
+lib_vhdl new simple_logic_v1_00_a;
+xfile add /home/javier/proyectos/master/master-bsi/ejercicio_6//pcores/simple_logic_v1_00_a/hdl/vhdl/simple_logic.vhd -lib_vhdl simple_logic_v1_00_a;
+project close;

@@ -101,3 +101,4 @@ SDK_Export/
 *.d
 *.elf.elfcheck
 *.elf.size
+**/*_bsp_*/*/

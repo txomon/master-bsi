@@ -79,18 +79,19 @@ char conv_hex(int value) {
 int read_data(XGpio *switches, XGpio *buttons) {
 	int data1, data2;
 
-	xil_printf("0x00");
+	xil_printf("0x00\b\b");
 
 	while (!PLS_1(buttons)) {
 		data1 = XGpio_DiscreteRead(switches, 1);
-		xil_printf("\b\b%c0", conv_hex(data1));
+		xil_printf("%c0=%3d\b\b\b\b\b\b", conv_hex(data1), data1 * 16);
 	}
 	while (PLS_1(buttons))
 		;
 
 	while (!PLS_1(buttons)) {
 		data2 = XGpio_DiscreteRead(switches, 1);
-		xil_printf("\b\b%c%c", conv_hex(data1), conv_hex(data2));
+		xil_printf("%c%c=%d\b\b\b\b\b\b", conv_hex(data1), conv_hex(data2),
+				data1 * 16 + data2);
 	}
 	while (PLS_1(buttons))
 		;
@@ -104,7 +105,7 @@ int main() {
 	XGpio leds, switches, buttons;
 	int data[8], result[8], x;
 
-	xil_printf("Starting application.\n\r");
+	xil_printf("%c[2JStarting application.\n\r", (char) 27);
 
 	XGpio_Initialize(&switches, XPAR_DIP_SWITCHES_4BIT_DEVICE_ID);
 	XGpio_SetDataDirection(&switches, 1, 0xffffffff);
@@ -116,6 +117,8 @@ int main() {
 	XGpio_SetDataDirection(&leds, 1, 0);
 
 	while (1) {
+		for (x = 0; x < 8; x++)
+			data[x] = 0;
 		xil_printf("Input data now.\n\r");
 		xil_printf("Read data. Please press button 1 to insert.\n\r");
 		xil_printf(
@@ -123,7 +126,7 @@ int main() {
 		xil_printf("Switches value is %c\n\r",
 				conv_hex(XGpio_DiscreteRead(&switches, 1)));
 		for (x = 0; x < 8; x++) {
-			xil_printf("input[%d]=",x);
+			xil_printf("input[%d]=", x);
 			data[x] = read_data(&switches, &buttons);
 			xil_printf("\n\r");
 			if (PLS_2(&buttons))
@@ -131,11 +134,11 @@ int main() {
 		}
 		xil_printf("Before doing the putdfslx\n\r");
 		for (x = 0; x < 8; x++)
-			putdfslx(data[x], 0, FSL_DEFAULT);
+			putfslx(data[x], 0, FSL_DEFAULT);
 		xil_printf("After doing the putdfslx\n\r");
 
 		for (x = 0; x < 8; x++)
-			getfslx(result[x], 1, FSL_DEFAULT);
+			getfslx(result[x], 0, FSL_DEFAULT);
 
 		XGpio_DiscreteWrite(&leds, 1, result[0]);
 

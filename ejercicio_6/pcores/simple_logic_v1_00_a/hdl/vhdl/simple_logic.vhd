@@ -170,7 +170,7 @@ begin
           when Read_Inputs =>
             if (FSL_S_Exists = '1') then
               -- Coprocessor function (Adding) happens here
-              sum         <= sum and FSL_S_Data;
+              sum         <= sum xor FSL_S_Data;
               if (nr_of_reads = 0) then
                 state        <= Write_Outputs;
                 nr_of_writes <= NUMBER_OF_OUTPUT_WORDS - 1;

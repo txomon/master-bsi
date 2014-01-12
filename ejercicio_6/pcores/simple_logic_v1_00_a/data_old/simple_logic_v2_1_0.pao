@@ -1,7 +1,7 @@
 ##############################################################################
 ## Filename:          /home/javier/proyectos/master/master-bsi/ejercicio_6/pcores/simple_logic_v1_00_a/data/simple_logic_v2_1_0.pao
 ## Description:       Peripheral Analysis Order
-## Date:              Sun Jan 12 14:55:54 2014 (by Create and Import Peripheral Wizard)
+## Date:              Sat Jan 11 16:18:40 2014 (by Create and Import Peripheral Wizard)
 ##############################################################################
 
 lib simple_logic_v1_00_a simple_logic vhdl

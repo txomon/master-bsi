@@ -83,7 +83,6 @@ impact.xsl
 executable.elf
 xmd_processor.opt
 _impact.cmd
-hdl/
 *.scr
 *.srp
 processor/
@@ -102,3 +101,5 @@ SDK_Export/
 *.elf.elfcheck
 *.elf.size
 **/*_bsp_*/*/
+**/hdl/
+!**/pcores/**/hdl/

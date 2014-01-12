@@ -191,8 +191,8 @@ END
 BEGIN simple_logic
  PARAMETER INSTANCE = simple_logic_0
  PARAMETER HW_VER = 1.00.a
- BUS_INTERFACE MFSL = simple_logic_0_to_microblaze_0
  BUS_INTERFACE SFSL = microblaze_0_to_simple_logic_0
+ BUS_INTERFACE MFSL = simple_logic_0_to_microblaze_0
  PORT FSL_Clk = clk_50_0000MHz
 END
 

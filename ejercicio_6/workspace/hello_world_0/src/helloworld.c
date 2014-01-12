@@ -90,7 +90,7 @@ int read_data(XGpio *switches, XGpio *buttons) {
 
 	while (!PLS_1(buttons)) {
 		data2 = XGpio_DiscreteRead(switches, 1);
-		xil_printf("%c%c=%d\b\b\b\b\b\b", conv_hex(data1), conv_hex(data2),
+		xil_printf("%c%c=%3d\b\b\b\b\b\b", conv_hex(data1), conv_hex(data2),
 				data1 * 16 + data2);
 	}
 	while (PLS_1(buttons))
@@ -132,13 +132,16 @@ int main() {
 			if (PLS_2(&buttons))
 				break;
 		}
-		xil_printf("Before doing the putdfslx\n\r");
-		for (x = 0; x < 8; x++)
-			putfslx(data[x], 0, FSL_DEFAULT);
-		xil_printf("After doing the putdfslx\n\r");
 
-		for (x = 0; x < 8; x++)
+		for (x = 0; x < 8; x++) {
+			xil_printf("Pushing data: %d\n\r", data[x]);
+			putfslx(data[x], 0, FSL_DEFAULT);
+		}
+
+		for (x = 0; x < 8; x++) {
 			getfslx(result[x], 0, FSL_DEFAULT);
+			xil_printf("Retrieving result: %d\n\r", result[x]);
+		}
 
 		XGpio_DiscreteWrite(&leds, 1, result[0]);
 
